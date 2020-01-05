@@ -3,16 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSystem;
 
-public class DriveCommand extends CommandBase {
+public class CommandTest extends CommandBase {
 
     private boolean done = false;
-    private final DriveSystem subsystem;
 
     // INIT
-    public DriveCommand(DriveSystem subsystem) {
-        this.subsystem = subsystem;
-
-        addRequirements(subsystem);
+    public CommandTest() {
     }
 
     // Called when the command is initially scheduled.
