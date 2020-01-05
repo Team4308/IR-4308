@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        m_robotContainer.m_driveSystem.stopControllers();
     }
 
     @Override

@@ -7,21 +7,35 @@
 
 package frc.robot;
 
+import bbb.control.JoystickHelper;
+import bbb.control.XBoxWrapper;
+import bbb.math.bbbVector2;
+import bbb.utils.bbbDoubleUtils;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
- * commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
+    /**
+     * Subsystems
+     */
     // Drivetrain
-    private final DriveSystem driveSystem = new DriveSystem();
+    public final DriveSystem m_driveSystem = new DriveSystem();
+
+    /**
+     * Commands
+     */
+    // Normal Arcade Drive
+    public final RunCommand normalArcadeDriveCommand = new RunCommand(
+            () -> m_driveSystem.NormalArcadeDrive(getDriveControl()), m_driveSystem);
+
+    /**
+     * Human Controllers
+     */
+    public XBoxWrapper driveStick = new XBoxWrapper(0);
+    public XBoxWrapper controlStick = new XBoxWrapper(1);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -31,22 +45,30 @@ public class RobotContainer {
         configureButtonBindings();
     }
 
-    /**
-     * Use this method to define your button->command mappings. Buttons can be
-     * created by instantiating a {@link GenericHID} or one of its subclasses
-     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-     * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
+    // Configure Button Bindings
     private void configureButtonBindings() {
     }
 
     /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
+     * Filtered Outputs
      */
+    // Drive Control
+    private bbbVector2 getDriveControl() {
+        double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
+        double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
+
+        bbbVector2 control = new bbbVector2(turn, throttle);
+        control = JoystickHelper.DeadbandRadial(control);
+        control = JoystickHelper.scaleStick(control, 2);
+
+        return control;
+    }
+
+    /**
+     * Misc
+     */
+    // Return Auto Command
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
         return null;
     }
 }

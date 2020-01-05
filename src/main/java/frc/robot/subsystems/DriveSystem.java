@@ -2,13 +2,18 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import bbb.math.bbbVector2;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.enums.DrivetrainMode;
 
 public class DriveSystem extends SubsystemBase {
     // Master Controllers
@@ -21,6 +26,9 @@ public class DriveSystem extends SubsystemBase {
 
     // Drive RPM for Velocity Control
     private double driveRPM = 250;
+
+    // Current Drive Mode
+    public DrivetrainMode driveMode = DrivetrainMode.VELOCITY;
 
     // Init
     public DriveSystem() {
@@ -82,11 +90,25 @@ public class DriveSystem extends SubsystemBase {
         masterRight.config_kF(Constants.Config.Drive.MotionControl.profileSlot,
                 Constants.Config.Drive.MotionControl.Right.kF, Constants.Generic.timeoutMs);
         masterRight.selectProfileSlot(Constants.Config.Drive.MotionControl.profileSlot, 0);
+
+        // Reset
+        stopControllers();
+        resetSensors();
     }
 
-    // Periodic Loop
+    // Periodic Loop (Not Used ATM)
     @Override
     public void periodic() {
+    }
+
+    public void NormalArcadeDrive(bbbVector2 control) {
+        masterLeft.set(TalonFXControlMode.PercentOutput, control.y, DemandType.ArbitraryFeedForward, control.x);
+        masterRight.set(TalonFXControlMode.PercentOutput, control.y, DemandType.ArbitraryFeedForward, -control.x);
+    }
+
+    public void stopControllers() {
+        masterLeft.set(TalonFXControlMode.PercentOutput, 0.0);
+        masterRight.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
     // Sensor Reset
