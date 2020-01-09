@@ -22,4 +22,12 @@ public class bbbDoubleUtils{
             return d;
         }
     }
+
+    public static double mapRange(double d, double old_min, double old_max, double new_min, double new_max) {
+        return (new_min + (new_max - new_min) * (d - old_min) / (old_max - old_min));
+    }
+
+    public static double mapRangeNew(double x, double in_min, double in_max, double out_min, double out_max) {
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
 }

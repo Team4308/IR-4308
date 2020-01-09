@@ -20,10 +20,6 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static class Input {
-        public static double kInputDeadband = 0.08;
-    }
-
     public static class Mapping {
         public static class Drive {
             public static int frontLeft = 0;
@@ -38,12 +34,35 @@ public final class Constants {
     }
 
     public static class Config {
+        public static class Input {
+            public static double kInputDeadband = 0.2;
+        }
+
         public static class Drive {
+            public static class Kinematics {
+                // Track Width (MUST BE IN METERS)
+                public static double kTrackWidth = 0.6;
+
+                public static final double kWheelDiameter = 8.4; // In Inches
+                public static final double kInchesPerRotation = 26.5;
+                public static final double kSensorUnitsPerRotation = 2048;
+                public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
+            }
+
             public static class Power {
                 public static double kOpenLoopRamp = 0.2;
 
                 public static StatorCurrentLimitConfiguration kStatorCurrentLimit = new StatorCurrentLimitConfiguration(
                         true, 30, 35, 100);
+            }
+
+            public static class GyroControl {
+                public static double kP = 0.03;
+                public static double kI = 0.0;
+                public static double kD = 0.0;
+                public static double kF = 0.0;
+
+                public static double kToleranceDegrees = 1.0;
             }
 
             public static class MotionControl {
@@ -64,5 +83,12 @@ public final class Constants {
                 }
             }
         }
+    }
+
+    public static class DynConfig {
+        public static class Drive {
+            public static double VelocityDriveRPM = 250;
+            public static double GyroTurnSpeed = 1;
+        } 
     }
 }

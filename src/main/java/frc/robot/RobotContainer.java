@@ -7,13 +7,14 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import bbb.control.JoystickHelper;
 import bbb.control.XBoxWrapper;
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSystem;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -21,8 +22,11 @@ public class RobotContainer {
     /**
      * Subsystems
      */
+    // NavX on MXP (Must Be Declared Before Everything)
+    public final AHRS ahrs = new AHRS(SPI.Port.kMXP);
+
     // Drivetrain
-    public final DriveSystem m_driveSystem = new DriveSystem();
+    public final DriveSystem m_driveSystem = new DriveSystem(this.ahrs);
 
     /**
      * Commands
@@ -53,13 +57,13 @@ public class RobotContainer {
      * Filtered Outputs
      */
     // Drive Control
-    private bbbVector2 getDriveControl() {
-        double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
-        double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
+    public bbbVector2 getDriveControl() {
+        double throttle = bbbDoubleUtils.normalize(driveStick.getLeftX());
+        double turn = bbbDoubleUtils.normalize(driveStick.getRightTrigger());
 
         bbbVector2 control = new bbbVector2(turn, throttle);
-        control = JoystickHelper.DeadbandRadial(control);
-        control = JoystickHelper.scaleStick(control, 2);
+        control = JoystickHelper.ScaledAxialDeadzone(control);
+        control = JoystickHelper.alternateScaleStick(control, 2);
 
         return control;
     }
