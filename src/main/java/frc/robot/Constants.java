@@ -23,9 +23,13 @@ public final class Constants {
     public static class Mapping {
         public static class Drive {
             public static int frontLeft = 0;
-            public static int backLeft = 1;
-            public static int frontRight = 2;
+            public static int backLeft = 2;
+            public static int frontRight = 1;
             public static int backRight = 3;
+
+            //Only when using mini cims
+            public static int middleLeft = 4;
+            public static int middleRight = 5;
         }
     }
 
@@ -45,7 +49,7 @@ public final class Constants {
 
                 public static final double kWheelDiameter = 8.4; // In Inches
                 public static final double kInchesPerRotation = 26.5;
-                public static final double kSensorUnitsPerRotation = 2048;
+                public static final double kSensorUnitsPerRotation = 2048; //2048 for talonfx 1024 for talonsrx with quad
                 public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
             }
 

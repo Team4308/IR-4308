@@ -13,7 +13,8 @@ import bbb.control.JoystickHelper;
 import bbb.control.XBoxWrapper;
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
-import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.TalonSRXDriveSystem;
+import frc.robot.subsystems.TalonSRXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -26,7 +27,7 @@ public class RobotContainer {
     public final AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
     // Drivetrain
-    public final DriveSystem m_driveSystem = new DriveSystem(this.ahrs);
+    public final TalonSRXDriveSystem m_driveSystem = new TalonSRXDriveSystem(this.ahrs);
 
     /**
      * Commands
@@ -58,12 +59,13 @@ public class RobotContainer {
      */
     // Drive Control
     public bbbVector2 getDriveControl() {
-        double throttle = bbbDoubleUtils.normalize(driveStick.getLeftX());
-        double turn = bbbDoubleUtils.normalize(driveStick.getRightTrigger());
+        double throttle = bbbDoubleUtils.normalize(driveStick.getLeftY());
+        double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
 
         bbbVector2 control = new bbbVector2(turn, throttle);
         control = JoystickHelper.ScaledAxialDeadzone(control);
         control = JoystickHelper.alternateScaleStick(control, 2);
+        control = JoystickHelper.clampStick(control);
 
         return control;
     }

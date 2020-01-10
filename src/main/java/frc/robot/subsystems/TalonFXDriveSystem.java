@@ -21,11 +21,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
 
-public class DriveSystem extends SubsystemBase {
+public class TalonFXDriveSystem extends SubsystemBase {
     // Master Controllers
-    private TalonFX masterLeft, masterRight;
+    private final TalonFX masterLeft, masterRight;
     // Slave Controllers
-    private TalonFX slaveLeft, slaveRight;
+    private final TalonFX slaveLeft, slaveRight;
 
     // AHRS
     private final AHRS ahrs;
@@ -48,7 +48,7 @@ public class DriveSystem extends SubsystemBase {
             Constants.Config.Drive.GyroControl.kI, Constants.Config.Drive.GyroControl.kD);
 
     // Init
-    public DriveSystem(AHRS ahrs) {
+    public TalonFXDriveSystem(AHRS ahrs) {
         // Setup and Add Controllers
         masterLeft = new TalonFX(Constants.Mapping.Drive.frontLeft);
         controllers.add(masterLeft);

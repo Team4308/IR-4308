@@ -62,10 +62,12 @@ public class JoystickHelper {
         bbbVector2 sign = new bbbVector2(Math.signum(stickInput.x), Math.signum(stickInput.y));
 
         if (Math.abs(stickInput.x) > Constants.Config.Input.kInputDeadband) {
-            result.x = sign.x * bbbDoubleUtils.mapRangeNew(Math.abs(stickInput.x), Constants.Config.Input.kInputDeadband, 1, 0, 1);
+            result.x = sign.x * bbbDoubleUtils.mapRangeNew(Math.abs(stickInput.x),
+                    Constants.Config.Input.kInputDeadband, 1, 0, 1);
         }
         if (Math.abs(stickInput.y) > Constants.Config.Input.kInputDeadband) {
-            result.y = sign.y * bbbDoubleUtils.mapRangeNew(Math.abs(stickInput.y), Constants.Config.Input.kInputDeadband, 1, 0, 1);
+            result.y = sign.y * bbbDoubleUtils.mapRangeNew(Math.abs(stickInput.y),
+                    Constants.Config.Input.kInputDeadband, 1, 0, 1);
         }
 
         return result;
@@ -94,5 +96,9 @@ public class JoystickHelper {
             bbbVector2 norm = new bbbVector2(stickInput.x / mag, stickInput.y / mag);
             return new bbbVector2(norm.x * Math.pow(mag, scale), norm.y * Math.pow(mag, scale));
         }
+    }
+
+    public static bbbVector2 clampStick(bbbVector2 stickInput) {
+        return new bbbVector2(bbbDoubleUtils.clamp(stickInput.x, -1, 1), bbbDoubleUtils.clamp(stickInput.y, -1, 1));
     }
 }
