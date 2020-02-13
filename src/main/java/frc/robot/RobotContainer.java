@@ -7,34 +7,48 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import bbb.control.JoystickHelper;
 import bbb.control.XBoxWrapper;
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
-import frc.robot.subsystems.TalonSRXDriveSystem;
-import frc.robot.subsystems.TalonSRXDriveSystem;
+import bbb.wrapper.LogSubsystem;
+import frc.robot.commands.NormalArcadeDriveCommand;
+import frc.robot.commands.VelocityArcadeDriveCommand;
+import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
-    /**
-     * Subsystems
-     */
+
     // NavX on MXP (Must Be Declared Before Everything)
     public final AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
+    /**
+     * Subsystems
+     */
+    public ArrayList<LogSubsystem> subsystems = new ArrayList<LogSubsystem>();
+
     // Drivetrain
-    public final TalonSRXDriveSystem m_driveSystem = new TalonSRXDriveSystem(this.ahrs);
+    private final TalonFXDriveSystem m_driveSystem;
+
+    // Color Sensor
+    private final ColorSensor m_colorSensor;
 
     /**
      * Commands
      */
     // Normal Arcade Drive
-    public final RunCommand normalArcadeDriveCommand = new RunCommand(
-            () -> m_driveSystem.NormalArcadeDrive(getDriveControl()), m_driveSystem);
+    private final NormalArcadeDriveCommand normalArcadeDriveCommand;
+    // Velocity Arcade Drive
+    private final VelocityArcadeDriveCommand velocityArcadeDriveCommand;
 
     /**
      * Human Controllers
@@ -46,12 +60,33 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        /**
+         * Init Subsystems
+         */
+        m_driveSystem = new TalonFXDriveSystem(this.ahrs);
+        subsystems.add(m_driveSystem);
+
+        m_colorSensor = new ColorSensor();
+        subsystems.add(m_colorSensor);
+
+        /**
+         * Init Commands
+         */
+        // Normal Arcade Drive
+        normalArcadeDriveCommand = new NormalArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
+        // Velocity Arcade Drive
+        velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
+
+        m_driveSystem.setDefaultCommand(velocityArcadeDriveCommand);
+
+
         // Configure the button bindings
         configureButtonBindings();
     }
 
     // Configure Button Bindings
     private void configureButtonBindings() {
+        driveStick.Back.whenPressed(new InstantCommand(() -> m_driveSystem.resetSensors(), m_driveSystem));
     }
 
     /**
@@ -59,7 +94,7 @@ public class RobotContainer {
      */
     // Drive Control
     public bbbVector2 getDriveControl() {
-        double throttle = bbbDoubleUtils.normalize(driveStick.getLeftY());
+        double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
         double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
 
         bbbVector2 control = new bbbVector2(turn, throttle);

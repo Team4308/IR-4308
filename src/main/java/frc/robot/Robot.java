@@ -7,7 +7,12 @@
 
 package frc.robot;
 
+import bbb.wrapper.LogSubsystem;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -23,6 +28,10 @@ public class Robot extends TimedRobot {
 
     private RobotContainer m_robotContainer;
 
+    public boolean log = true;
+
+    PowerDistributionPanel pdp = new PowerDistributionPanel();
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -33,6 +42,16 @@ public class Robot extends TimedRobot {
         // and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+
+        // Logging
+        if (log) {
+            Shuffleboard.getTab("Log").addNumber("Joystick X", () -> m_robotContainer.getDriveControl().x).withWidget(BuiltInWidgets.kNumberBar);
+            Shuffleboard.getTab("Log").addNumber("Joystick Y", () -> m_robotContainer.getDriveControl().y).withWidget(BuiltInWidgets.kNumberBar);
+
+            for (LogSubsystem subsystem : m_robotContainer.subsystems) {
+                Shuffleboard.getTab("Log").add(subsystem.log());
+            }
+        }
     }
 
     /**
@@ -54,7 +73,9 @@ public class Robot extends TimedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        System.out.println("x: " + m_robotContainer.getDriveControl().x + " - y: " + m_robotContainer.getDriveControl().y);
+
+        // Logging
+        SmartDashboard.putNumber("Current", pdp.getTotalCurrent());
     }
 
     /**
@@ -62,7 +83,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        m_robotContainer.m_driveSystem.stopControllers();
+        
     }
 
     @Override

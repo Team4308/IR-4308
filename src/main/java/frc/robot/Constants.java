@@ -8,6 +8,9 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.revrobotics.ColorMatch;
+
+import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -26,15 +29,11 @@ public final class Constants {
             public static int backLeft = 2;
             public static int frontRight = 1;
             public static int backRight = 3;
-
-            //Only when using mini cims
-            public static int middleLeft = 4;
-            public static int middleRight = 5;
         }
     }
 
     public static class Generic {
-        public static int timeoutMs = 30;
+        public static int timeoutMs = 100;
     }
 
     public static class Config {
@@ -42,19 +41,28 @@ public final class Constants {
             public static double kInputDeadband = 0.2;
         }
 
+        public static class ColorSensor {
+            public static Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+            public static Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+            public static Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+            public static Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+        }
+
         public static class Drive {
             public static class Kinematics {
                 // Track Width (MUST BE IN METERS)
                 public static double kTrackWidth = 0.6;
 
-                public static final double kWheelDiameter = 8.4; // In Inches
+                public static final double kWheelDiameter = 6; // In Inches
                 public static final double kInchesPerRotation = 26.5;
-                public static final double kSensorUnitsPerRotation = 2048; //2048 for talonfx 1024 for talonsrx with quad
+                public static final double kSensorUnitsPerRotation = 2048; //2048 for talonfx
                 public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
+
+                public static final double kGearRatio = (12 * 20) / (50 * 54);
             }
 
             public static class Power {
-                public static double kOpenLoopRamp = 0.2;
+                public static double kOpenLoopRamp = 0.0;
 
                 public static StatorCurrentLimitConfiguration kStatorCurrentLimit = new StatorCurrentLimitConfiguration(
                         true, 30, 35, 100);
@@ -73,17 +81,17 @@ public final class Constants {
                 public static int profileSlot = 0;
 
                 public static class Left {
-                    public static double kP = 0.0;
+                    public static double kP = 0.1;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
-                    public static double kF = 0.0;
+                    public static double kF = 0.0468;
                 }
 
                 public static class Right {
-                    public static double kP = 0.0;
+                    public static double kP = 0.1;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
-                    public static double kF = 0.0;
+                    public static double kF = 0.0468;
                 }
             }
         }
@@ -91,7 +99,8 @@ public final class Constants {
 
     public static class DynConfig {
         public static class Drive {
-            public static double VelocityDriveRPM = 250;
+            //Will be off because of friction
+            public static double VelocityDriveRPM = 6376;
             public static double GyroTurnSpeed = 1;
         } 
     }

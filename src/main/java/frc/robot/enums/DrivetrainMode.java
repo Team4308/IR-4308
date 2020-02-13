@@ -4,5 +4,5 @@ public enum DrivetrainMode {
     NORMAL,
     VELOCITY,
     MOTIONMAGIC,
-    MOTIONPROFILE
+    PATHFOLLOWING
 }

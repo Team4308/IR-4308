@@ -11,30 +11,32 @@ import com.kauailabs.navx.frc.AHRS;
 
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
+import bbb.wrapper.LogSubsystem;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
 
-public class TalonFXDriveSystem extends SubsystemBase {
+public class TalonFXDriveSystem extends LogSubsystem {
     // Master Controllers
-    private final TalonFX masterLeft, masterRight;
+    public final TalonFX masterLeft, masterRight;
     // Slave Controllers
     private final TalonFX slaveLeft, slaveRight;
-
-    // AHRS
-    private final AHRS ahrs;
 
     // Controllers
     private ArrayList<TalonFX> controllers = new ArrayList<TalonFX>();
 
+    // AHRS
+    public final AHRS ahrs;
+
     // Current Drive Mode
-    private DrivetrainMode driveMode = DrivetrainMode.VELOCITY;
+    public DrivetrainMode driveMode = DrivetrainMode.VELOCITY;
 
     // Drivetrain Kinematics
     private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
@@ -43,8 +45,8 @@ public class TalonFXDriveSystem extends SubsystemBase {
     // Drivetrain Odometry
     private final DifferentialDriveOdometry odometry;
 
-    // Turn PID Controller
-    private final PIDController turnController = new PIDController(Constants.Config.Drive.GyroControl.kP,
+    // Turn PID Controller (Velocity)
+    public final PIDController turnController = new PIDController(Constants.Config.Drive.GyroControl.kP,
             Constants.Config.Drive.GyroControl.kI, Constants.Config.Drive.GyroControl.kD);
 
     // Init
@@ -67,7 +69,7 @@ public class TalonFXDriveSystem extends SubsystemBase {
 
         // Turn PID Controller Config
         turnController.enableContinuousInput(-180, 180);
-        turnController.setTolerance(Constants.Config.Drive.GyroControl.kToleranceDegrees);
+        turnController.setTolerance(Constants.Config.Drive.GyroControl.kToleranceDegrees / 5.4);
         turnController.setSetpoint(0.0);
 
         // Reset Config for all
@@ -139,36 +141,6 @@ public class TalonFXDriveSystem extends SubsystemBase {
     }
 
     /**
-     * Drive functions
-     */
-
-    // Normal Arcade Drive
-    public void NormalArcadeDrive(bbbVector2 control) {
-        masterLeft.set(TalonFXControlMode.PercentOutput, control.y, DemandType.ArbitraryFeedForward, control.x);
-        masterRight.set(TalonFXControlMode.PercentOutput, control.y, DemandType.ArbitraryFeedForward, -control.x);
-    }
-
-    // Velocity Arcade Drive
-    public void VelocityArcadeDrive(bbbVector2 control) {
-        double leftTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
-        double rightTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
-
-        turnController.setSetpoint(turnController.getSetpoint() + (control.x * Constants.DynConfig.Drive.GyroTurnSpeed));
-
-        leftTargetRPM += bbbDoubleUtils.clamp(turnController.calculate(ahrs.getAngle()), -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
-        rightTargetRPM += -bbbDoubleUtils.clamp(turnController.calculate(ahrs.getAngle()), -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
-
-        leftTargetRPM = bbbDoubleUtils.clamp(leftTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
-        rightTargetRPM = bbbDoubleUtils.clamp(rightTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
-        
-        double leftTargetUnitsPS = leftTargetRPM * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation / 600.0;
-        double rightTargetUnitsPS = rightTargetRPM * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation / 600.0;
-
-        masterLeft.set(TalonFXControlMode.Velocity, leftTargetUnitsPS);
-        masterRight.set(TalonFXControlMode.Velocity, rightTargetUnitsPS);
-    }
-
-    /**
      * Getters And Setters
      */
 
@@ -203,6 +175,17 @@ public class TalonFXDriveSystem extends SubsystemBase {
         masterLeft.setSelectedSensorPosition(0, 0, Constants.Generic.timeoutMs);
         masterRight.setSelectedSensorPosition(0, 0, Constants.Generic.timeoutMs);
         turnController.reset();
+        ahrs.reset();
+    }
+
+    @Override
+    public Sendable log() {
+        Shuffleboard.getTab("Log").addNumber("TurnC SP", () -> turnController.getSetpoint());
+        Shuffleboard.getTab("Log").addNumber("Left Vel", () -> ((getLeftSensorVelocity() / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
+        Shuffleboard.getTab("Log").addNumber("Right Vel", () -> ((getRightSensorVelocity() / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
+        Shuffleboard.getTab("Log").addNumber("Left Pos", () -> getLeftSensorPosition());
+        Shuffleboard.getTab("Log").addNumber("Right Pos", () -> getRightSensorPosition());
+        return this;
     }
 
 }
