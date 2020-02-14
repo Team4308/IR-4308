@@ -18,7 +18,7 @@ import bbb.utils.bbbDoubleUtils;
 import bbb.wrapper.LogSubsystem;
 import frc.robot.commands.NormalArcadeDriveCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
-import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
