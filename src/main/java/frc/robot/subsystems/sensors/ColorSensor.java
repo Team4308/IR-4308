@@ -36,13 +36,13 @@ public class ColorSensor extends LogSubsystem {
         ColorMatchResult match = getColorMatch();
 
         if (match.color == Constants.Config.ColorSensor.kBlueTarget) {
-            return 'B';
+            return "B";
         } else if (match.color == Constants.Config.ColorSensor.kGreenTarget) {
-            return 'G';
+            return "G";
         } else if (match.color == Constants.Config.ColorSensor.kRedTarget) {
-            return 'R';
+            return "R";
         } else {
-            return 'Y';
+            return "Y";
         }
     }
 

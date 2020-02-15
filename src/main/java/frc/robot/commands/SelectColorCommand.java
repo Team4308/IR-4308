@@ -52,6 +52,8 @@ public class SelectColorCommand extends CommandBase {
     @Override
     public void execute(){
         // Left as an exercise for the rest of the programming team ;)
+        // Decide if you want to figure out how far you want to rotate to get the the right colour
+        // Or stop when you see the right colour (change the isFinished code if this is case)
     }
 
     @Override
