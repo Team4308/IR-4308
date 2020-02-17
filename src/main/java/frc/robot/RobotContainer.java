@@ -74,7 +74,7 @@ public class RobotContainer {
          */
         // Normal Arcade Drive
         normalArcadeDriveCommand = new NormalArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
-        // Velocity Arcade Drive
+        // Velocity Arcade Drivea
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
 
         m_driveSystem.setDefaultCommand(velocityArcadeDriveCommand);
