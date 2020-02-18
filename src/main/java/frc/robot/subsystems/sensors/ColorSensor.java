@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.sensors;
 
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
@@ -36,13 +36,13 @@ public class ColorSensor extends LogSubsystem {
         ColorMatchResult match = getColorMatch();
 
         if (match.color == Constants.Config.ColorSensor.kBlueTarget) {
-            return "blue";
+            return "B";
         } else if (match.color == Constants.Config.ColorSensor.kGreenTarget) {
-            return "green";
+            return "G";
         } else if (match.color == Constants.Config.ColorSensor.kRedTarget) {
-            return "red";
+            return "R";
         } else {
-            return "yellow";
+            return "Y";
         }
     }
 

@@ -17,8 +17,11 @@ import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
 import bbb.wrapper.LogSubsystem;
 import frc.robot.commands.NormalArcadeDriveCommand;
+import frc.robot.commands.RotatePanelCommand;
+import frc.robot.commands.SelectColorCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
-import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.sensors.ColorSensor;
+import frc.robot.subsystems.ControlPanelSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -42,6 +45,9 @@ public class RobotContainer {
     // Color Sensor
     private final ColorSensor m_colorSensor;
 
+    // Control Panel
+    private final ControlPanelSystem m_controlPanelSystem;
+
     /**
      * Commands
      */
@@ -49,6 +55,7 @@ public class RobotContainer {
     private final NormalArcadeDriveCommand normalArcadeDriveCommand;
     // Velocity Arcade Drive
     private final VelocityArcadeDriveCommand velocityArcadeDriveCommand;
+    
 
     /**
      * Human Controllers
@@ -69,6 +76,9 @@ public class RobotContainer {
         m_colorSensor = new ColorSensor();
         subsystems.add(m_colorSensor);
 
+        m_controlPanelSystem = new ControlPanelSystem();
+        subsystems.add(m_controlPanelSystem);
+
         /**
          * Init Commands
          */
@@ -76,6 +86,7 @@ public class RobotContainer {
         normalArcadeDriveCommand = new NormalArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
         // Velocity Arcade Drivea
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
+        
 
         m_driveSystem.setDefaultCommand(velocityArcadeDriveCommand);
 
@@ -87,6 +98,8 @@ public class RobotContainer {
     // Configure Button Bindings
     private void configureButtonBindings() {
         driveStick.Back.whenPressed(new InstantCommand(() -> m_driveSystem.resetSensors(), m_driveSystem));
+        controlStick.Back.whenPressed(new RotatePanelCommand());
+        controlStick.Start.whenPressed(new SelectColorCommand());
     }
 
     /**
