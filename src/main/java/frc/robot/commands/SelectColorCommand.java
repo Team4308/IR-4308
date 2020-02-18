@@ -26,40 +26,45 @@ public class SelectColorCommand extends CommandBase {
         gameData = DriverStation.getInstance().getGameSpecificMessage();
         if (gameData.length() > 0) {
             switch (gameData.charAt(0)) {
-            case 'B':
-                Constants.DynConfig.ControlPanel.gameDataColor = gameData;
-                break;
-            case 'G':
-                // Green case code
-                Constants.DynConfig.ControlPanel.gameDataColor = gameData;
-                break;
-            case 'R':
-                // Red case code
-                Constants.DynConfig.ControlPanel.gameDataColor = gameData;
-                break;
-            case 'Y':
-                // Yellow case code
-                Constants.DynConfig.ControlPanel.gameDataColor = gameData;
-                break;
-            default:
-                // This is corrupt data
-                Constants.DynConfig.ControlPanel.gameDataColor = "";
-                break;
+                case 'B':
+                    Constants.DynConfig.ControlPanel.gameDataColor = gameData;
+                    break;
+                case 'G':
+                    // Green case code
+                    Constants.DynConfig.ControlPanel.gameDataColor = gameData;
+                    break;
+                case 'R':
+                    // Red case code
+                    Constants.DynConfig.ControlPanel.gameDataColor = gameData;
+                    break;
+                case 'Y':
+                    // Yellow case code
+                    Constants.DynConfig.ControlPanel.gameDataColor = gameData;
+                    break;
+                default:
+                    // This is corrupt data
+                    Constants.DynConfig.ControlPanel.gameDataColor = "";
+                    break;
             }
         } else {
             // Code for no data received yet
             Constants.DynConfig.ControlPanel.gameDataColor = "";
         }
-    }
-    @Override
-    public void execute(){
-        // Left as an exercise for the rest of the programming team ;)
-        // Decide if you want to figure out how far you want to rotate to get the the right colour
-        // Or stop when you see the right colour (change the isFinished code if this is case)
+        Constants.DynConfig.ControlPanel.firstColorSeen = m_sensor.getColorDetected();
+        m_subsystem.setOutput();
     }
 
     @Override
-    public boolean isFinished(){
+    public void execute() {
+        String currentColor = m_sensor.getColorDetected();
+        if (currentColor.equals(Constants.DynConfig.ControlPanel.gameDataColor)) {
+            m_subsystem.stopMoving();
+            finished = true;
+        }
+    }
+    
+    @Override
+    public boolean isFinished() {
         return finished;
     }
 }
