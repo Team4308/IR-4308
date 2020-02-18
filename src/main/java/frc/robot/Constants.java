@@ -34,6 +34,10 @@ public final class Constants {
         public static class ControlPanel{
             public static int motor = 4;
         }
+
+        public static class Intake{
+            public static int motor = 5;
+        }
     }
 
     public static class Generic {
@@ -58,6 +62,10 @@ public final class Constants {
             public static double output = 0.5;
         }
 
+        public static class Intake {
+            public static double kOpenLoopRamp = 0.0;
+        }
+
         public static class Drive {
             public static class Kinematics {
                 // Track Width (MUST BE IN METERS)
@@ -79,10 +87,9 @@ public final class Constants {
             }
 
             public static class GyroControl {
-                public static double kP = 0.001;
+                public static double kP = 0.0;
                 public static double kI = 0.0;
                 public static double kD = 0.0;
-                public static double kF = 0.0;
 
                 public static double kToleranceDegrees = 1.0;
             }
