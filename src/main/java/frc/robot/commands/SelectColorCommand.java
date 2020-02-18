@@ -11,6 +11,8 @@ public class SelectColorCommand extends CommandBase {
     private final ControlPanelSystem m_subsystem;
     private final ColorSensor m_sensor;
 
+    private boolean finished = false;
+
     public SelectColorCommand() {
         m_subsystem = new ControlPanelSystem();
         m_sensor = new ColorSensor();
@@ -58,6 +60,6 @@ public class SelectColorCommand extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return true;
+        return finished;
     }
 }
