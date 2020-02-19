@@ -45,14 +45,15 @@ public class VelocityArcadeDriveCommand extends CommandBase {
             if (!setSetpoint) {
                 m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getAngle());
                 setSetpoint = true;
-            }
-            double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
+            } else {
+                double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
 
-            leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
-            rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+                leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+                rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+            }
         } else {
-            leftTargetRPM += -bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
-            rightTargetRPM += bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+            leftTargetRPM += bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+            rightTargetRPM += -bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
 
             setSetpoint = false;
         }
