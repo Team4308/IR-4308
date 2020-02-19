@@ -30,6 +30,10 @@ public final class Constants {
             public static int frontRight = 1;
             public static int backRight = 3;
         }
+
+        public static class ControlPanel{
+            public static int motor = 4;
+        }
     }
 
     public static class Generic {
@@ -46,6 +50,12 @@ public final class Constants {
             public static Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
             public static Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
             public static Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+        }
+
+        public static class ControlPanel {
+            public static double kOpenLoopRamp = 0.0;
+
+            public static double output = 0.5;
         }
 
         public static class Drive {
@@ -100,6 +110,13 @@ public final class Constants {
         public static class Drive {
             public static double VelocityDriveRPM = 6376;
             public static double GyroTurnSpeed = 2;
-        } 
+        }
+
+        public static class ControlPanel{
+            public static String gameDataColor = "";
+            public static String firstColorSeen = "";
+            public static boolean seen;
+            public static int timesSeen = 0;
+        }
     }
 }
