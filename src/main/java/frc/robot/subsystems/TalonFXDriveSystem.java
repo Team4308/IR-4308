@@ -70,7 +70,7 @@ public class TalonFXDriveSystem extends LogSubsystem {
         // Turn PID Controller Config
         turnController.enableContinuousInput(-180, 180);
         turnController.setTolerance(Constants.Config.Drive.GyroControl.kToleranceDegrees / 5.4);
-        turnController.setSetpoint(0.0);
+        turnController.setSetpoint(ahrs.getAngle());
 
         // Reset Config for all
         for (TalonFX talon : controllers) {
@@ -185,6 +185,7 @@ public class TalonFXDriveSystem extends LogSubsystem {
         Shuffleboard.getTab("Log").addNumber("Right Vel", () -> ((getRightSensorVelocity() / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
         Shuffleboard.getTab("Log").addNumber("Left Pos", () -> getLeftSensorPosition());
         Shuffleboard.getTab("Log").addNumber("Right Pos", () -> getRightSensorPosition());
+        Shuffleboard.getTab("Log").add(this.turnController);
         return this;
     }
 

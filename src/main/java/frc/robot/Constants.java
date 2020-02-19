@@ -108,11 +108,10 @@ public final class Constants {
 
     public static class DynConfig {
         public static class Drive {
-            //Will be off because of friction
             public static double VelocityDriveRPM = 6376;
-            public static double GyroTurnSpeed = 1;
+            public static double GyroTurnSpeed = 2;
         }
-        
+
         public static class ControlPanel{
             public static String gameDataColor = "";
             public static String firstColorSeen = "";
