@@ -79,10 +79,9 @@ public final class Constants {
             }
 
             public static class GyroControl {
-                public static double kP = 0.001;
+                public static double kP = 0.0;
                 public static double kI = 0.0;
                 public static double kD = 0.0;
-                public static double kF = 0.0;
 
                 public static double kToleranceDegrees = 1.0;
             }
@@ -109,11 +108,10 @@ public final class Constants {
 
     public static class DynConfig {
         public static class Drive {
-            //Will be off because of friction
             public static double VelocityDriveRPM = 6376;
-            public static double GyroTurnSpeed = 1;
+            public static double GyroTurnSpeed = 2;
         }
-        
+
         public static class ControlPanel{
             public static String gameDataColor = "";
             public static String firstColorSeen = "";
