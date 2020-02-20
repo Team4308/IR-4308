@@ -16,12 +16,14 @@ import bbb.control.XBoxWrapper;
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
 import bbb.wrapper.LogSubsystem;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.NormalArcadeDriveCommand;
 import frc.robot.commands.RotatePanelCommand;
 import frc.robot.commands.SelectColorCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
 import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.ControlPanelSystem;
+import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -48,6 +50,9 @@ public class RobotContainer {
     // Control Panel
     private final ControlPanelSystem m_controlPanelSystem;
 
+    // Intake
+    private final IntakeSystem m_intakeSystem;
+
     /**
      * Commands
      */
@@ -55,7 +60,8 @@ public class RobotContainer {
     private final NormalArcadeDriveCommand normalArcadeDriveCommand;
     // Velocity Arcade Drive
     private final VelocityArcadeDriveCommand velocityArcadeDriveCommand;
-    
+    // Intake
+    private final IntakeCommand intakeCommand;
 
     /**
      * Human Controllers
@@ -79,14 +85,18 @@ public class RobotContainer {
         m_controlPanelSystem = new ControlPanelSystem();
         subsystems.add(m_controlPanelSystem);
 
+        m_intakeSystem = new IntakeSystem();
+        subsystems.add(m_intakeSystem);
+
         /**
          * Init Commands
          */
         // Normal Arcade Drive
         normalArcadeDriveCommand = new NormalArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
-        // Velocity Arcade Drivea
+        // Velocity Arcade Drive
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
-        
+        // Intake 
+        intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
 
         m_driveSystem.setDefaultCommand(velocityArcadeDriveCommand);
 
@@ -100,6 +110,8 @@ public class RobotContainer {
         driveStick.Back.whenPressed(new InstantCommand(() -> m_driveSystem.resetSensors(), m_driveSystem));
         controlStick.Back.whenPressed(new RotatePanelCommand());
         controlStick.Start.whenPressed(new SelectColorCommand());
+        controlStick.RB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
+        controlStick.LB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
     }
 
     /**
@@ -107,7 +119,7 @@ public class RobotContainer {
      */
     // Drive Control
     public bbbVector2 getDriveControl() {
-        double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
+        double throttle = bbbDoubleUtils.normalize(driveStick.getLeftY());
         double turn = bbbDoubleUtils.normalize(-driveStick.getRightX());
 
         bbbVector2 control = new bbbVector2(turn, throttle);
@@ -116,6 +128,11 @@ public class RobotContainer {
         control = JoystickHelper.clampStick(control);
 
         return control;
+    }
+
+    // Intake Control
+    public double getIntakeControl(){
+        return bbbDoubleUtils.normalize(controlStick.getRightTrigger());
     }
 
     /**

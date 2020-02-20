@@ -16,6 +16,8 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     private final TalonFXDriveSystem m_subsystem;
     private final Supplier<bbbVector2> control;
 
+    private boolean setSetpoint = false;
+
     // INIT
     public VelocityArcadeDriveCommand(TalonFXDriveSystem subsystem, Supplier<bbbVector2> control) {
         this.m_subsystem = subsystem;
@@ -39,19 +41,22 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         double leftTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
         double rightTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
 
-        double newSetpoint = m_subsystem.turnController.getSetpoint() + (control.x * Constants.DynConfig.Drive.GyroTurnSpeed);
-        if (newSetpoint > 180) {
-            newSetpoint -= 360;
-        } else if (newSetpoint < -180) {
-            newSetpoint += 360;
+        if (control.x == 0.0) {
+            if (!setSetpoint) {
+                m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getAngle());
+                setSetpoint = true;
+            } else {
+                double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
+
+                leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+                rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+            }
+        } else {
+            leftTargetRPM += bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+            rightTargetRPM += -bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+
+            setSetpoint = false;
         }
-
-        m_subsystem.turnController.setSetpoint(newSetpoint);
-
-        double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
-
-        leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
-        rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
 
         leftTargetRPM = bbbDoubleUtils.clamp(leftTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
         rightTargetRPM = bbbDoubleUtils.clamp(rightTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
