@@ -23,6 +23,7 @@ import frc.robot.commands.SelectColorCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
 import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.ControlPanelSystem;
+import frc.robot.subsystems.HopperSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
@@ -52,6 +53,9 @@ public class RobotContainer {
 
     // Intake
     private final IntakeSystem m_intakeSystem;
+
+    // Hopper
+    private final HopperSystem m_hopperSystem;
 
     /**
      * Commands
@@ -88,6 +92,11 @@ public class RobotContainer {
         m_intakeSystem = new IntakeSystem();
         subsystems.add(m_intakeSystem);
 
+        m_hopperSystem = new HopperSystem();
+        subsystems.add(m_hopperSystem);
+
+        
+
         /**
          * Init Commands
          */
@@ -112,6 +121,7 @@ public class RobotContainer {
         controlStick.Start.whenPressed(new SelectColorCommand());
         controlStick.RB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
         controlStick.LB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
+        controlStick.A.whenPressed(new InstantCommand(() -> m_hopperSystem.motorControl(), m_hopperSystem));
     }
 
     /**
