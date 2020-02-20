@@ -2,15 +2,12 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
-import bbb.math.bbbVector2;
-import bbb.utils.bbbDoubleUtils;
 import bbb.wrapper.LogSubsystem;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.controller.PIDController;
