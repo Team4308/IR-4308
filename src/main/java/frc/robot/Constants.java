@@ -31,6 +31,10 @@ public final class Constants {
             public static int backRight = 3;
         }
 
+        public static class Flywheel{
+            public static int motor = 7;
+        }
+
         public static class ControlPanel{
             public static int motor = 4;
         }
@@ -64,6 +68,20 @@ public final class Constants {
 
         public static class Intake {
             public static double kOpenLoopRamp = 0.0;
+        }
+
+        public static class Flywheel{
+            public static double kOpenLoopRamp = 0.0;
+
+            public static class MotionControl{
+                public static int profileSlot = 0;
+                public static final double kSensorUnitsPerRotation = 4096;
+                
+                public static double kP = 0.0;
+                public static double kI = 0.0;
+                public static double kD = 0.0;
+                public static double kF = 0.0;
+            }
         }
 
         public static class Drive {
