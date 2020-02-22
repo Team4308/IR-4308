@@ -17,6 +17,7 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     private final Supplier<bbbVector2> control;
 
     private boolean setSetpoint = false;
+    private double previousGyroValue = 0.0;
 
     // INIT
     public VelocityArcadeDriveCommand(TalonFXDriveSystem subsystem, Supplier<bbbVector2> control) {
@@ -43,7 +44,7 @@ public class VelocityArcadeDriveCommand extends CommandBase {
 
         if (control.x == 0.0) {
             if (!setSetpoint) {
-                m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getAngle());
+                System.out.println("Turn Controller Setpoint Set");
                 setSetpoint = true;
             } else {
                 double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
@@ -54,6 +55,8 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         } else {
             leftTargetRPM += bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
             rightTargetRPM += -bbbDoubleUtils.clamp(control.x, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+
+            m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getAngle());
 
             setSetpoint = false;
         }
