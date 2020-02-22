@@ -13,9 +13,9 @@ public class SelectColorCommand extends CommandBase {
 
     private boolean finished = false;
 
-    public SelectColorCommand() {
-        m_subsystem = new ControlPanelSystem();
-        m_sensor = new ColorSensor();
+    public SelectColorCommand(ControlPanelSystem controlPanelSystem, ColorSensor colorSensor) {
+        this.m_subsystem = controlPanelSystem;
+        this.m_sensor = colorSensor;
 
         addRequirements(m_subsystem, m_sensor);
     }
