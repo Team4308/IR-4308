@@ -138,6 +138,10 @@ public final class Constants {
             public static double GyroTurnSpeed = 4;
         }
 
+        public static class Flywheel{
+            public static double RPM = 3000;
+        }
+
         public static class ControlPanel{
             public static String gameDataColor = "";
             public static String firstColorSeen = "";

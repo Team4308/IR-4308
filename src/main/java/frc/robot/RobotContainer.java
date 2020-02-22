@@ -21,8 +21,10 @@ import frc.robot.commands.NormalArcadeDriveCommand;
 import frc.robot.commands.RotatePanelCommand;
 import frc.robot.commands.SelectColorCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
+import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.ControlPanelSystem;
+import frc.robot.subsystems.FlywheelSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
@@ -53,6 +55,9 @@ public class RobotContainer {
     // Intake
     private final IntakeSystem m_intakeSystem;
 
+    // Flywheel
+    private final FlywheelSystem m_flywheelSystem;
+
     /**
      * Commands
      */
@@ -62,6 +67,8 @@ public class RobotContainer {
     private final VelocityArcadeDriveCommand velocityArcadeDriveCommand;
     // Intake
     private final IntakeCommand intakeCommand;
+    // Flywheel
+    private final VelocityFlywheelCommand flywheelCommand;
 
     /**
      * Human Controllers
@@ -88,6 +95,9 @@ public class RobotContainer {
         m_intakeSystem = new IntakeSystem();
         subsystems.add(m_intakeSystem);
 
+        m_flywheelSystem = new FlywheelSystem();
+        subsystems.add(m_flywheelSystem);
+
         /**
          * Init Commands
          */
@@ -97,9 +107,10 @@ public class RobotContainer {
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
         // Intake 
         intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
+        // Velocity Flywheel
+        flywheelCommand = new VelocityFlywheelCommand(m_flywheelSystem, () ->  getFlywheelControl());
 
         m_driveSystem.setDefaultCommand(velocityArcadeDriveCommand);
-
 
         // Configure the button bindings
         configureButtonBindings();
@@ -133,6 +144,19 @@ public class RobotContainer {
     // Intake Control
     public double getIntakeControl(){
         return bbbDoubleUtils.normalize(controlStick.getRightTrigger());
+    }
+
+    // Flywheel Control
+    public bbbVector2 getFlywheelControl(){
+        double throttle = bbbDoubleUtils.normalize(controlStick.getLeftY());
+        double turn = bbbDoubleUtils.normalize(-controlStick.getRightX());
+
+        bbbVector2 control = new bbbVector2(turn, throttle);
+        control = JoystickHelper.ScaledAxialDeadzone(control);
+        control = JoystickHelper.alternateScaleStick(control, 2);
+        control = JoystickHelper.clampStick(control);
+
+        return control;
     }
 
     /**

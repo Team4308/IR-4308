@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Sendable;
 import frc.robot.Constants;
 
 public class FlywheelSystem extends LogSubsystem {
-    TalonSRX flywheelMotor;
+    public TalonSRX flywheelMotor;
 
     public FlywheelSystem() {
         flywheelMotor = new TalonSRX(Constants.Mapping.Flywheel.motor);
