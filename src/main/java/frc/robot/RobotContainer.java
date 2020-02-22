@@ -70,6 +70,11 @@ public class RobotContainer {
     public XBoxWrapper controlStick = new XBoxWrapper(1);
 
     /**
+     * Choosers
+     */
+    SendableChooser<Command> driveCommandChooser = new SendableChooser<Command>();
+
+    /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
@@ -95,21 +100,29 @@ public class RobotContainer {
         normalArcadeDriveCommand = new NormalArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
         // Velocity Arcade Drive
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
+
+        driveCommandChooser.addOption("Normal Drive", normalArcadeDriveCommand);
+        driveCommandChooser.setDefaultOption("Velocity Drive", velocityArcadeDriveCommand);
+
+        SmartDashboard.putData(driveCommandChooser);
+
         // Intake 
         intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
 
-        m_driveSystem.setDefaultCommand(velocityArcadeDriveCommand);
+        m_intakeSystem.setDefaultCommand(intakeCommand);
 
 
-        // Configure the button bindings
+        /**
+         * Configure Button Bindings
+         */
         configureButtonBindings();
     }
 
     // Configure Button Bindings
     private void configureButtonBindings() {
         driveStick.Back.whenPressed(new InstantCommand(() -> m_driveSystem.resetSensors(), m_driveSystem));
-        controlStick.Back.whenPressed(new RotatePanelCommand());
-        controlStick.Start.whenPressed(new SelectColorCommand());
+        controlStick.Back.whenPressed(new RotatePanelCommand(m_controlPanelSystem, m_colorSensor));
+        controlStick.Start.whenPressed(new SelectColorCommand(m_controlPanelSystem, m_colorSensor));
         controlStick.RB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
         controlStick.LB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
     }
@@ -138,6 +151,10 @@ public class RobotContainer {
     /**
      * Misc
      */
+    // Return Teleop Command
+    public Command getTeleopCommand() {
+        return driveCommandChooser.getSelected();
+    }
     // Return Auto Command
     public Command getAutonomousCommand() {
         return null;
