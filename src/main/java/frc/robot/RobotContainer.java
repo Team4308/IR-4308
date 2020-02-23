@@ -25,6 +25,7 @@ import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.ControlPanelSystem;
 import frc.robot.subsystems.FlywheelSystem;
+import frc.robot.subsystems.HopperSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
@@ -58,6 +59,9 @@ public class RobotContainer {
     // Flywheel
     private final FlywheelSystem m_flywheelSystem;
 
+    // Hopper
+    private final HopperSystem m_hopperSystem;
+
     /**
      * Commands
      */
@@ -75,6 +79,11 @@ public class RobotContainer {
      */
     public XBoxWrapper driveStick = new XBoxWrapper(0);
     public XBoxWrapper controlStick = new XBoxWrapper(1);
+
+    /**
+     * Choosers
+     */
+    SendableChooser<Command> driveCommandChooser = new SendableChooser<Command>();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -98,6 +107,9 @@ public class RobotContainer {
         m_flywheelSystem = new FlywheelSystem();
         subsystems.add(m_flywheelSystem);
 
+        m_hopperSystem = new HopperSystem();
+        subsystems.add(m_hopperSystem);
+
         /**
          * Init Commands
          */
@@ -105,24 +117,33 @@ public class RobotContainer {
         normalArcadeDriveCommand = new NormalArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
         // Velocity Arcade Drive
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
+
+        driveCommandChooser.addOption("Normal Drive", normalArcadeDriveCommand);
+        driveCommandChooser.setDefaultOption("Velocity Drive", velocityArcadeDriveCommand);
+
+        SmartDashboard.putData(driveCommandChooser);
+
         // Intake 
         intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
         // Velocity Flywheel
         flywheelCommand = new VelocityFlywheelCommand(m_flywheelSystem, () ->  getFlywheelControl());
 
-        m_driveSystem.setDefaultCommand(velocityArcadeDriveCommand);
+        m_intakeSystem.setDefaultCommand(intakeCommand);
 
-        // Configure the button bindings
+        /**
+         * Configure Button Bindings
+         */
         configureButtonBindings();
     }
 
     // Configure Button Bindings
     private void configureButtonBindings() {
         driveStick.Back.whenPressed(new InstantCommand(() -> m_driveSystem.resetSensors(), m_driveSystem));
-        controlStick.Back.whenPressed(new RotatePanelCommand());
-        controlStick.Start.whenPressed(new SelectColorCommand());
+        controlStick.Back.whenPressed(new RotatePanelCommand(m_controlPanelSystem, m_colorSensor));
+        controlStick.Start.whenPressed(new SelectColorCommand(m_controlPanelSystem, m_colorSensor));
         controlStick.RB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
         controlStick.LB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
+        controlStick.A.whenPressed(new InstantCommand(() -> m_hopperSystem.motorControl(), m_hopperSystem));
     }
 
     /**
@@ -149,11 +170,9 @@ public class RobotContainer {
     // Flywheel Control
     public bbbVector2 getFlywheelControl(){
         double throttle = bbbDoubleUtils.normalize(controlStick.getLeftY());
-        double turn = bbbDoubleUtils.normalize(-controlStick.getRightX());
 
-        bbbVector2 control = new bbbVector2(turn, throttle);
+        bbbVector2 control = new bbbVector2(0.0, throttle);
         control = JoystickHelper.ScaledAxialDeadzone(control);
-        control = JoystickHelper.alternateScaleStick(control, 2);
         control = JoystickHelper.clampStick(control);
 
         return control;
@@ -162,6 +181,10 @@ public class RobotContainer {
     /**
      * Misc
      */
+    // Return Teleop Command
+    public Command getTeleopCommand() {
+        return driveCommandChooser.getSelected();
+    }
     // Return Auto Command
     public Command getAutonomousCommand() {
         return null;

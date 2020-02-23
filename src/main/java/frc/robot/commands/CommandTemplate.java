@@ -2,12 +2,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class CommandTest extends CommandBase {
+public class CommandTemplate extends CommandBase {
 
     private boolean done = false;
 
     // INIT
-    public CommandTest() {
+    public CommandTemplate() {
     }
 
     // Called when the command is initially scheduled.

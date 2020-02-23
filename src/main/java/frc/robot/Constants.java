@@ -42,6 +42,10 @@ public final class Constants {
         public static class Intake{
             public static int motor = 5;
         }
+
+        public static class Hopper {
+            public static int motor = 6;
+        }
     }
 
     public static class Generic {
@@ -62,7 +66,6 @@ public final class Constants {
 
         public static class ControlPanel {
             public static double kOpenLoopRamp = 0.0;
-
             public static double output = 0.5;
         }
 
@@ -73,15 +76,20 @@ public final class Constants {
         public static class Flywheel{
             public static double kOpenLoopRamp = 0.0;
 
-            public static class MotionControl{
+            public static class MotionControl {
                 public static int profileSlot = 0;
                 public static final double kSensorUnitsPerRotation = 4096;
                 
-                public static double kP = 0.0;
+                public static double kP = 0.1;
                 public static double kI = 0.0;
                 public static double kD = 0.0;
                 public static double kF = 0.0;
             }
+        }
+      
+        public static class Hopper {
+            public static double kOpenLoopRamp = 0.0;
+            public static double output = 1.0;
         }
 
         public static class Drive {

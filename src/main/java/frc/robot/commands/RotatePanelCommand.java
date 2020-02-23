@@ -11,9 +11,9 @@ public class RotatePanelCommand extends CommandBase {
     private final ColorSensor m_sensor;
     private boolean finished;
 
-    public RotatePanelCommand() {
-        m_subsystem = new ControlPanelSystem();
-        m_sensor = new ColorSensor();
+    public RotatePanelCommand(ControlPanelSystem controlPanelSystem, ColorSensor colorSensor) {
+        this.m_subsystem = controlPanelSystem;
+        this.m_sensor = colorSensor;
         finished = false;
     
         addRequirements(m_subsystem, m_sensor);
