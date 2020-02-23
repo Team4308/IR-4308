@@ -38,6 +38,10 @@ public final class Constants {
         public static class Intake{
             public static int motor = 5;
         }
+
+        public static class Hopper {
+            public static int motor = 6;
+        }
     }
 
     public static class Generic {
@@ -58,12 +62,16 @@ public final class Constants {
 
         public static class ControlPanel {
             public static double kOpenLoopRamp = 0.0;
-
             public static double output = 0.5;
         }
 
         public static class Intake {
             public static double kOpenLoopRamp = 0.0;
+        }
+
+        public static class Hopper {
+            public static double kOpenLoopRamp = 0.0;
+            public static double output = 1.0;
         }
 
         public static class Drive {
