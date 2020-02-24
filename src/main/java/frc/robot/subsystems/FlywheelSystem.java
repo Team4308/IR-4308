@@ -19,15 +19,15 @@ public class FlywheelSystem extends LogSubsystem {
         flywheelMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, Constants.Generic.timeoutMs);
         flywheelMotor.setSensorPhase(false);
 
-        flywheelMotor.config_kF(Constants.Config.Flywheel.MotionControl.profileSlot,
-                Constants.Config.Flywheel.MotionControl.kF, Constants.Generic.timeoutMs);
-        flywheelMotor.config_kP(Constants.Config.Flywheel.MotionControl.profileSlot,
-                Constants.Config.Flywheel.MotionControl.kP, Constants.Generic.timeoutMs);
-        flywheelMotor.config_kI(Constants.Config.Flywheel.MotionControl.profileSlot,
-                Constants.Config.Flywheel.MotionControl.kI, Constants.Generic.timeoutMs);
-        flywheelMotor.config_kD(Constants.Config.Flywheel.MotionControl.profileSlot,
-                Constants.Config.Flywheel.MotionControl.kD, Constants.Generic.timeoutMs);
-        flywheelMotor.selectProfileSlot(Constants.Config.Flywheel.MotionControl.profileSlot, 0);
+        flywheelMotor.config_kF(Constants.Config.Flywheel.VelocityControl.profileSlot,
+                Constants.Config.Flywheel.VelocityControl.kF, Constants.Generic.timeoutMs);
+        flywheelMotor.config_kP(Constants.Config.Flywheel.VelocityControl.profileSlot,
+                Constants.Config.Flywheel.VelocityControl.kP, Constants.Generic.timeoutMs);
+        flywheelMotor.config_kI(Constants.Config.Flywheel.VelocityControl.profileSlot,
+                Constants.Config.Flywheel.VelocityControl.kI, Constants.Generic.timeoutMs);
+        flywheelMotor.config_kD(Constants.Config.Flywheel.VelocityControl.profileSlot,
+                Constants.Config.Flywheel.VelocityControl.kD, Constants.Generic.timeoutMs);
+        flywheelMotor.selectProfileSlot(Constants.Config.Flywheel.VelocityControl.profileSlot, 0);
 
         stopMoving();
         resetSensors();

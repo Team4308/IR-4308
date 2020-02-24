@@ -22,6 +22,7 @@ import frc.robot.commands.RotatePanelCommand;
 import frc.robot.commands.SelectColorCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
+import frc.robot.commands.auto.DriveDistance;
 import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.ControlPanelSystem;
 import frc.robot.subsystems.FlywheelSystem;
@@ -185,8 +186,9 @@ public class RobotContainer {
     public Command getTeleopCommand() {
         return driveCommandChooser.getSelected();
     }
+
     // Return Auto Command
     public Command getAutonomousCommand() {
-        return null;
+        return new DriveDistance(1, m_driveSystem);
     }
 }

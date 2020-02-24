@@ -76,7 +76,7 @@ public final class Constants {
         public static class Flywheel{
             public static double kOpenLoopRamp = 0.0;
 
-            public static class MotionControl {
+            public static class VelocityControl {
                 public static int profileSlot = 0;
                 public static final double kSensorUnitsPerRotation = 4096;
                 
@@ -120,7 +120,7 @@ public final class Constants {
                 public static double kToleranceDegrees = 1.0;
             }
 
-            public static class MotionControl {
+            public static class VelocityControl {
                 public static int profileSlot = 0;
 
                 public static class Left {
@@ -135,6 +135,45 @@ public final class Constants {
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0468;
+                }
+            }
+
+            public static class MotionMagic {
+                public static int profileSlot = 1;
+
+                public static int maxVel = 4000;
+                public static int maxAcc = 4000;
+
+                public static class Left {
+                    public static double kP = 0.2;
+                    public static double kI = 0.0;
+                    public static double kD = 0.0;
+                    public static double kF = 0.0;
+                }
+
+                public static class Right {
+                    public static double kP = 0.2;
+                    public static double kI = 0.0;
+                    public static double kD = 0.0;
+                    public static double kF = 0.0;
+                }
+            }
+
+            public static class MotionProfile {
+                public static int profileSlot = 2;
+
+                public static class Left {
+                    public static double kP = 0.2;
+                    public static double kI = 0.0;
+                    public static double kD = 0.0;
+                    public static double kF = 0.0;
+                }
+
+                public static class Right {
+                    public static double kP = 0.2;
+                    public static double kI = 0.0;
+                    public static double kD = 0.0;
+                    public static double kF = 0.0;
                 }
             }
         }

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
+import com.ctre.phoenix.motorcontrol.MotorCommutation;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
@@ -92,7 +94,7 @@ public class TalonFXDriveSystem extends LogSubsystem {
             talon.configStatorCurrentLimit(Constants.Config.Drive.Power.kStatorCurrentLimit,
                     Constants.Generic.timeoutMs);
         }
-
+        
         // Configure Primary Closed Loop Sensor
         masterLeft.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.Generic.timeoutMs);
         masterRight.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0,
@@ -102,27 +104,33 @@ public class TalonFXDriveSystem extends LogSubsystem {
         masterLeft.setSensorPhase(false);
         masterLeft.setSensorPhase(false);
 
-        // Set Left PIDF values
-        masterLeft.config_kP(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Left.kP, Constants.Generic.timeoutMs);
-        masterLeft.config_kI(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Left.kI, Constants.Generic.timeoutMs);
-        masterLeft.config_kD(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Left.kD, Constants.Generic.timeoutMs);
-        masterLeft.config_kF(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Left.kF, Constants.Generic.timeoutMs);
-        masterLeft.selectProfileSlot(Constants.Config.Drive.MotionControl.profileSlot, 0);
+        // Set Left Velocity PIDF values
+        masterLeft.config_kP(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Left.kP, Constants.Generic.timeoutMs);
+        masterLeft.config_kI(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Left.kI, Constants.Generic.timeoutMs);
+        masterLeft.config_kD(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Left.kD, Constants.Generic.timeoutMs);
+        masterLeft.config_kF(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Left.kF, Constants.Generic.timeoutMs);
+        masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
 
-        // Set Right PIDF values
-        masterRight.config_kP(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Right.kP, Constants.Generic.timeoutMs);
-        masterRight.config_kI(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Right.kI, Constants.Generic.timeoutMs);
-        masterRight.config_kD(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Right.kD, Constants.Generic.timeoutMs);
-        masterRight.config_kF(Constants.Config.Drive.MotionControl.profileSlot,
-                Constants.Config.Drive.MotionControl.Right.kF, Constants.Generic.timeoutMs);
-        masterRight.selectProfileSlot(Constants.Config.Drive.MotionControl.profileSlot, 0);
+        // Set Right Velocity PIDF values
+        masterRight.config_kP(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Right.kP, Constants.Generic.timeoutMs);
+        masterRight.config_kI(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Right.kI, Constants.Generic.timeoutMs);
+        masterRight.config_kD(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Right.kD, Constants.Generic.timeoutMs);
+        masterRight.config_kF(Constants.Config.Drive.VelocityControl.profileSlot,
+                Constants.Config.Drive.VelocityControl.Right.kF, Constants.Generic.timeoutMs);
+        masterRight.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
+
+        masterLeft.configMotionCruiseVelocity(Constants.Config.Drive.MotionMagic.maxVel);
+        masterRight.configMotionCruiseVelocity(Constants.Config.Drive.MotionMagic.maxVel);
+
+        masterLeft.configMotionAcceleration(Constants.Config.Drive.MotionMagic.maxAcc);
+        masterRight.configMotionAcceleration(Constants.Config.Drive.MotionMagic.maxAcc);
 
         // Reset
         stopControllers();
