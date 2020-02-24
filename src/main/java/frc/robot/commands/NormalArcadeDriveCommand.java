@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import bbb.math.bbbVector2;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
@@ -26,6 +27,7 @@ public class NormalArcadeDriveCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
         m_subsystem.stopControllers();
         m_subsystem.driveMode = DrivetrainMode.NORMAL;
     }
