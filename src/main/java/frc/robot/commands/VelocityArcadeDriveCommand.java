@@ -16,9 +16,6 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     private final TalonFXDriveSystem m_subsystem;
     private final Supplier<bbbVector2> control;
 
-    private boolean setSetpoint = false;
-    private double previousGyroValue = 0.0;
-
     // INIT
     public VelocityArcadeDriveCommand(TalonFXDriveSystem subsystem, Supplier<bbbVector2> control) {
         this.m_subsystem = subsystem;
@@ -32,6 +29,8 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     public void initialize() {
         this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
         m_subsystem.stopControllers();
+        m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getAngle());
+
         m_subsystem.driveMode = DrivetrainMode.VELOCITY;
     }
 
@@ -39,12 +38,22 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     @Override
     public void execute() {
         bbbVector2 control = this.control.get();
+
+        double newSetpoint = m_subsystem.turnController.getSetpoint() + (control.x * Constants.DynConfig.Drive.GyroTurnSpeed);
+        if (newSetpoint > 180) {
+            newSetpoint -= 360;
+        } else if (newSetpoint < -180) {
+            newSetpoint += 360;
+        }
+
+        m_subsystem.turnController.setSetpoint(newSetpoint);
+        double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
         
         double leftTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
         double rightTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
 
-        leftTargetRPM += control.x * Constants.DynConfig.Drive.VelocityDriveRPM;
-        rightTargetRPM += -control.x * Constants.DynConfig.Drive.VelocityDriveRPM;
+        leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+        rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
 
         leftTargetRPM = bbbDoubleUtils.clamp(leftTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
         rightTargetRPM = bbbDoubleUtils.clamp(rightTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);

@@ -33,6 +33,7 @@ public class DriveDistance extends CommandBase {
                 / Constants.Config.Drive.Kinematics.kEncoderInchesPerCount;
 
         m_subsystem.masterLeft.set(TalonFXControlMode.MotionMagic, encoderDistance);
+        m_subsystem.masterRight.set(TalonFXControlMode.MotionMagic, encoderDistance);
 
         if (m_subsystem.masterLeft.getActiveTrajectoryPosition() < encoderDistance + 10
                 && m_subsystem.masterLeft.getActiveTrajectoryPosition() > encoderDistance - 10

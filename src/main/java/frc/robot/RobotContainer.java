@@ -169,14 +169,8 @@ public class RobotContainer {
     }
 
     // Flywheel Control
-    public bbbVector2 getFlywheelControl(){
-        double throttle = bbbDoubleUtils.normalize(controlStick.getLeftY());
-
-        bbbVector2 control = new bbbVector2(0.0, throttle);
-        control = JoystickHelper.ScaledAxialDeadzone(control);
-        control = JoystickHelper.clampStick(control);
-
-        return control;
+    public double getFlywheelControl(){
+        return bbbDoubleUtils.normalize(controlStick.getLeftTrigger());
     }
 
     /**

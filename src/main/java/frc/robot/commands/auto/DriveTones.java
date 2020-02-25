@@ -1,11 +1,6 @@
 package frc.robot.commands.auto;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.enums.DrivetrainMode;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
 public class DriveTones extends CommandBase {

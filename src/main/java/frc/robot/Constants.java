@@ -98,7 +98,7 @@ public final class Constants {
                 public static double kTrackWidth = 0.6;
 
                 public static final double kWheelDiameter = 6; // In Inches
-                public static final double kInchesPerRotation = 26.5;
+                public static final double kInchesPerRotation = kWheelDiameter * Math.PI;
                 public static final double kSensorUnitsPerRotation = 2048; //2048 for talonfx
                 public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
 
@@ -113,7 +113,7 @@ public final class Constants {
             }
 
             public static class GyroControl {
-                public static double kP = 0.0;
+                public static double kP = 0.01;
                 public static double kI = 0.0;
                 public static double kD = 0.0;
 
@@ -141,8 +141,8 @@ public final class Constants {
             public static class MotionMagic {
                 public static int profileSlot = 1;
 
-                public static int maxVel = 4000;
-                public static int maxAcc = 4000;
+                public static int maxVel = 2000;
+                public static int maxAcc = 2000;
 
                 public static class Left {
                     public static double kP = 0.2;
@@ -187,13 +187,6 @@ public final class Constants {
 
         public static class Flywheel{
             public static double RPM = 3000;
-        }
-
-        public static class ControlPanel{
-            public static String gameDataColor = "";
-            public static String firstColorSeen = "";
-            public static boolean seen;
-            public static int timesSeen = 0;
         }
     }
 }
