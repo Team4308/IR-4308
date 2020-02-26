@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import bbb.wrapper.LogSubsystem;
@@ -17,6 +18,7 @@ public class ControlPanelSystem extends LogSubsystem{
         motor = new VictorSPX(Constants.Mapping.ControlPanel.motor);
         motor.configFactoryDefault(Constants.Generic.timeoutMs);
         motor.configOpenloopRamp(Constants.Config.ControlPanel.kOpenLoopRamp, Constants.Generic.timeoutMs);
+        motor.setNeutralMode(NeutralMode.Brake);
         stopMoving();
     }
 

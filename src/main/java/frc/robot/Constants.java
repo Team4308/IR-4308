@@ -32,19 +32,26 @@ public final class Constants {
         }
 
         public static class Flywheel{
-            public static int motor = 7;
+            public static int motor = 0;
         }
 
         public static class ControlPanel{
-            public static int motor = 4;
+            public static int motor = 1;
         }
 
         public static class Intake{
-            public static int motor = 5;
+            public static int motor = 2;
         }
 
         public static class Hopper {
-            public static int motor = 6;
+            public static int motor = 3;
+        }
+
+        public static class Climb {
+            public static int master = 0;
+            public static int slave1 = 1;
+            public static int slave2 = 2;
+            public static int slave3 = 3;
         }
     }
 
@@ -66,7 +73,7 @@ public final class Constants {
 
         public static class ControlPanel {
             public static double kOpenLoopRamp = 0.0;
-            public static double output = 0.5;
+            public static double output = 0.25;
         }
 
         public static class Intake {
@@ -102,7 +109,7 @@ public final class Constants {
                 public static final double kSensorUnitsPerRotation = 2048; //2048 for talonfx
                 public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
 
-                public static final double kGearRatio = (12 * 20) / (50 * 54);
+                public static final double kGearRatio = 0.088888888888888;
             }
 
             public static class Power {
@@ -113,11 +120,11 @@ public final class Constants {
             }
 
             public static class GyroControl {
-                public static double kP = 0.01;
-                public static double kI = 0.0;
-                public static double kD = 0.0;
+                public static double kP = 0.006;
+                public static double kI = 0.001;
+                public static double kD = 0.0001;
 
-                public static double kToleranceDegrees = 1.0;
+                public static double kToleranceDegrees = 10.0;
             }
 
             public static class VelocityControl {
@@ -141,20 +148,20 @@ public final class Constants {
             public static class MotionMagic {
                 public static int profileSlot = 1;
 
-                public static int maxVel = 2000;
-                public static int maxAcc = 2000;
+                public static int maxVel = 10000;
+                public static int maxAcc = 5000;
 
                 public static class Left {
-                    public static double kP = 0.2;
+                    public static double kP = 0.3;
                     public static double kI = 0.0;
-                    public static double kD = 0.0;
+                    public static double kD = 0.01;
                     public static double kF = 0.0;
                 }
 
                 public static class Right {
-                    public static double kP = 0.2;
+                    public static double kP = 0.3;
                     public static double kI = 0.0;
-                    public static double kD = 0.0;
+                    public static double kD = 0.01;
                     public static double kF = 0.0;
                 }
             }
@@ -181,8 +188,8 @@ public final class Constants {
 
     public static class DynConfig {
         public static class Drive {
-            public static double VelocityDriveRPM = 3000;
-            public static double GyroTurnSpeed = 4;
+            public static double VelocityDriveRPM = 6379;
+            public static double GyroTurnSpeed = 8;
         }
 
         public static class Flywheel{

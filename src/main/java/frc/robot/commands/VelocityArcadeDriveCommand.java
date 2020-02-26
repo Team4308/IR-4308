@@ -16,6 +16,10 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     private final TalonFXDriveSystem m_subsystem;
     private final Supplier<bbbVector2> control;
 
+    private boolean setSetpoint = false;
+    private double prevGyroValue = 0.0;
+    private int waitCounter = 0;
+
     // INIT
     public VelocityArcadeDriveCommand(TalonFXDriveSystem subsystem, Supplier<bbbVector2> control) {
         this.m_subsystem = subsystem;
@@ -30,6 +34,7 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
         m_subsystem.stopControllers();
         m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getAngle());
+        prevGyroValue = m_subsystem.ahrs.getYaw();
 
         m_subsystem.driveMode = DrivetrainMode.VELOCITY;
     }
@@ -39,21 +44,34 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     public void execute() {
         bbbVector2 control = this.control.get();
 
-        double newSetpoint = m_subsystem.turnController.getSetpoint() + (control.x * Constants.DynConfig.Drive.GyroTurnSpeed);
-        if (newSetpoint > 180) {
-            newSetpoint -= 360;
-        } else if (newSetpoint < -180) {
-            newSetpoint += 360;
-        }
-
-        m_subsystem.turnController.setSetpoint(newSetpoint);
-        double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
-        
         double leftTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
         double rightTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
 
-        leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
-        rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+        if (control.x == 0.0) {
+            if (!setSetpoint) {
+                if (prevGyroValue == m_subsystem.ahrs.getYaw()) {
+                    if (waitCounter > 3) {
+                        m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
+                        setSetpoint = true;
+                    } else {
+                        waitCounter++;
+                    }
+                } else {
+                    prevGyroValue = m_subsystem.ahrs.getYaw();
+                }
+            } else {
+                double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
+
+                leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+                rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+            }
+        } else {
+            leftTargetRPM += control.x * Constants.DynConfig.Drive.VelocityDriveRPM;
+            rightTargetRPM += -control.x * Constants.DynConfig.Drive.VelocityDriveRPM;
+
+            waitCounter = 0;
+            setSetpoint = false;
+        }
 
         leftTargetRPM = bbbDoubleUtils.clamp(leftTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
         rightTargetRPM = bbbDoubleUtils.clamp(rightTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);

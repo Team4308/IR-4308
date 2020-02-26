@@ -8,14 +8,14 @@ import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
-public class DriveDistance extends CommandBase {
+public class DriveTurn extends CommandBase {
     private TalonFXDriveSystem m_subsystem;
-    private double meters = 0.0;
+    private double angle = 0.0;
 
     int withinThresholdLoops = 0;
 
-    public DriveDistance(double meters, TalonFXDriveSystem subsystem) {
-        this.meters = meters;
+    public DriveTurn(double angle, TalonFXDriveSystem subsystem) {
+        this.angle = angle;
         this.m_subsystem = subsystem;
         
         withinThresholdLoops = 0;
@@ -33,17 +33,19 @@ public class DriveDistance extends CommandBase {
 
     @Override
     public void execute() {
-        double encoderDistance = -(Units.metersToInches(this.meters)
+        double encoderDistance = -(22.1
                 / Constants.Config.Drive.Kinematics.kEncoderInchesPerCount);
         encoderDistance /= Constants.Config.Drive.Kinematics.kGearRatio;
+        encoderDistance *= Math.PI;
+        encoderDistance /= 2;
 
         m_subsystem.masterLeft.set(TalonFXControlMode.MotionMagic, encoderDistance);
-        m_subsystem.masterRight.set(TalonFXControlMode.MotionMagic, encoderDistance);
+        m_subsystem.masterRight.set(TalonFXControlMode.MotionMagic, -encoderDistance);
 
         if (m_subsystem.masterLeft.getActiveTrajectoryPosition() < encoderDistance + 4
                 && m_subsystem.masterLeft.getActiveTrajectoryPosition() > encoderDistance - 4
-                && m_subsystem.masterRight.getActiveTrajectoryPosition() < encoderDistance + 4
-                && m_subsystem.masterRight.getActiveTrajectoryPosition() > encoderDistance - 4) {
+                && m_subsystem.masterRight.getActiveTrajectoryPosition() < -encoderDistance + 4
+                && m_subsystem.masterRight.getActiveTrajectoryPosition() > -encoderDistance - 4) {
             withinThresholdLoops += 1;
         } else {
             withinThresholdLoops = 0;

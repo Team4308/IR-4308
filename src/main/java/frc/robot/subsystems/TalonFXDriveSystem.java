@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -91,6 +92,7 @@ public class TalonFXDriveSystem extends LogSubsystem {
             talon.configOpenloopRamp(Constants.Config.Drive.Power.kOpenLoopRamp, Constants.Generic.timeoutMs);
             talon.configStatorCurrentLimit(Constants.Config.Drive.Power.kStatorCurrentLimit,
                     Constants.Generic.timeoutMs);
+            talon.setNeutralMode(NeutralMode.Coast);
         }
         
         // Configure Primary Closed Loop Sensor
@@ -124,11 +126,29 @@ public class TalonFXDriveSystem extends LogSubsystem {
                 Constants.Config.Drive.VelocityControl.Right.kF, Constants.Generic.timeoutMs);
         masterRight.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
 
+        // Motion Magic Configuration
         masterLeft.configMotionCruiseVelocity(Constants.Config.Drive.MotionMagic.maxVel);
         masterRight.configMotionCruiseVelocity(Constants.Config.Drive.MotionMagic.maxVel);
-
         masterLeft.configMotionAcceleration(Constants.Config.Drive.MotionMagic.maxAcc);
         masterRight.configMotionAcceleration(Constants.Config.Drive.MotionMagic.maxAcc);
+
+        masterLeft.config_kP(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kP, Constants.Generic.timeoutMs);
+        masterLeft.config_kI(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kI, Constants.Generic.timeoutMs);
+        masterLeft.config_kD(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kD, Constants.Generic.timeoutMs);
+        masterLeft.config_kF(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kF, Constants.Generic.timeoutMs);
+
+        masterRight.config_kP(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kP, Constants.Generic.timeoutMs);
+        masterRight.config_kI(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kI, Constants.Generic.timeoutMs);
+        masterRight.config_kD(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kD, Constants.Generic.timeoutMs);
+        masterRight.config_kF(Constants.Config.Drive.MotionMagic.profileSlot,
+                Constants.Config.Drive.MotionMagic.Right.kF, Constants.Generic.timeoutMs);
 
         // Reset
         stopControllers();
@@ -188,7 +208,7 @@ public class TalonFXDriveSystem extends LogSubsystem {
         Shuffleboard.getTab("Log").addNumber("Right Vel", () -> ((getRightSensorVelocity() / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
         Shuffleboard.getTab("Log").addNumber("Left Pos", () -> getLeftSensorPosition());
         Shuffleboard.getTab("Log").addNumber("Right Pos", () -> getRightSensorPosition());
-        Shuffleboard.getTab("Log").add(this.turnController);
+
         return this;
     }
 

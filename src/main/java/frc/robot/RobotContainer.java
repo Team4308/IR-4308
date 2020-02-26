@@ -16,6 +16,7 @@ import bbb.control.XBoxWrapper;
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
 import bbb.wrapper.LogSubsystem;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.NormalArcadeDriveCommand;
 import frc.robot.commands.RotatePanelCommand;
@@ -23,7 +24,9 @@ import frc.robot.commands.SelectColorCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.commands.auto.DriveDistance;
+import frc.robot.commands.auto.DriveTurn;
 import frc.robot.subsystems.sensors.ColorSensor;
+import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.ControlPanelSystem;
 import frc.robot.subsystems.FlywheelSystem;
 import frc.robot.subsystems.HopperSystem;
@@ -43,7 +46,7 @@ public class RobotContainer {
     /**
      * Subsystems
      */
-    public ArrayList<LogSubsystem> subsystems = new ArrayList<LogSubsystem>();
+    public final ArrayList<LogSubsystem> subsystems = new ArrayList<LogSubsystem>();
 
     // Drivetrain
     private final TalonFXDriveSystem m_driveSystem;
@@ -63,6 +66,9 @@ public class RobotContainer {
     // Hopper
     private final HopperSystem m_hopperSystem;
 
+    // Climb
+    private final ClimbSystem m_climbSystem;
+
     /**
      * Commands
      */
@@ -70,21 +76,30 @@ public class RobotContainer {
     private final NormalArcadeDriveCommand normalArcadeDriveCommand;
     // Velocity Arcade Drive
     private final VelocityArcadeDriveCommand velocityArcadeDriveCommand;
+
     // Intake
     private final IntakeCommand intakeCommand;
+
     // Flywheel
     private final VelocityFlywheelCommand flywheelCommand;
+
+    // Climb
+    private final ClimbCommand climbCommand;
+
+    /**
+     * Auto
+     */
 
     /**
      * Human Controllers
      */
-    public XBoxWrapper driveStick = new XBoxWrapper(0);
-    public XBoxWrapper controlStick = new XBoxWrapper(1);
+    public final XBoxWrapper driveStick = new XBoxWrapper(0);
+    public final XBoxWrapper controlStick = new XBoxWrapper(1);
 
     /**
      * Choosers
      */
-    SendableChooser<Command> driveCommandChooser = new SendableChooser<Command>();
+    private final SendableChooser<Command> driveCommandChooser = new SendableChooser<Command>();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -111,6 +126,9 @@ public class RobotContainer {
         m_hopperSystem = new HopperSystem();
         subsystems.add(m_hopperSystem);
 
+        m_climbSystem = new ClimbSystem();
+        subsystems.add(m_climbSystem);
+
         /**
          * Init Commands
          */
@@ -119,17 +137,29 @@ public class RobotContainer {
         // Velocity Arcade Drive
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
 
+        // Intake
+        intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
+        m_intakeSystem.setDefaultCommand(intakeCommand);
+
+        // Velocity Flywheel
+        flywheelCommand = new VelocityFlywheelCommand(m_flywheelSystem, () -> getFlywheelControl());
+        m_flywheelSystem.setDefaultCommand(flywheelCommand);
+
+        // Climb
+        climbCommand = new ClimbCommand(m_climbSystem, () -> getClimbControl());
+        m_climbSystem.setDefaultCommand(climbCommand);
+
+        /**
+         * Init Auto
+         */
+
+        /**
+         * Init Choosers
+         */
+        // Drive Command Chooser
         driveCommandChooser.addOption("Normal Drive", normalArcadeDriveCommand);
         driveCommandChooser.setDefaultOption("Velocity Drive", velocityArcadeDriveCommand);
-
         SmartDashboard.putData(driveCommandChooser);
-
-        // Intake 
-        intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
-        // Velocity Flywheel
-        flywheelCommand = new VelocityFlywheelCommand(m_flywheelSystem, () ->  getFlywheelControl());
-
-        m_intakeSystem.setDefaultCommand(intakeCommand);
 
         /**
          * Configure Button Bindings
@@ -164,13 +194,25 @@ public class RobotContainer {
     }
 
     // Intake Control
-    public double getIntakeControl(){
+    public double getIntakeControl() {
         return bbbDoubleUtils.normalize(controlStick.getRightTrigger());
     }
 
     // Flywheel Control
-    public double getFlywheelControl(){
+    public double getFlywheelControl() {
         return bbbDoubleUtils.normalize(controlStick.getLeftTrigger());
+    }
+
+    // Climb Control
+    public double getClimbControl() {
+        double controly = bbbDoubleUtils.normalize(controlStick.getRightY());
+        controly = bbbDoubleUtils.clamp(controly, -1.0, 0.0);
+
+        bbbVector2 control = new bbbVector2(0.0, controly);
+        control = JoystickHelper.ScaledAxialDeadzone(control);
+        control = JoystickHelper.clampStick(control);
+
+        return control.y;
     }
 
     /**
@@ -183,6 +225,10 @@ public class RobotContainer {
 
     // Return Auto Command
     public Command getAutonomousCommand() {
-        return new DriveDistance(1, m_driveSystem);
+        return new DriveDistance(3, m_driveSystem).andThen(new DriveTurn(90, m_driveSystem))
+                .andThen(new DriveDistance(2, m_driveSystem)).andThen(new DriveTurn(90, m_driveSystem))
+                .andThen(new DriveDistance(-1, m_driveSystem)).andThen(new DriveDistance(1, m_driveSystem))
+                .andThen(new DriveTurn(90, m_driveSystem)).andThen(new DriveTurn(90, m_driveSystem))
+                .andThen(new DriveDistance(1, m_driveSystem)).andThen(new DriveDistance(-2, m_driveSystem));
     }
 }
