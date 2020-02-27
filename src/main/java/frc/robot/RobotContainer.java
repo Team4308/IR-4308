@@ -25,6 +25,7 @@ import frc.robot.commands.VelocityArcadeDriveCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.commands.auto.DriveDistance;
 import frc.robot.commands.auto.DriveTurn;
+import frc.robot.commands.auto.groups.TestAuto;
 import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.ControlPanelSystem;
@@ -89,6 +90,7 @@ public class RobotContainer {
     /**
      * Auto
      */
+    private final TestAuto testAuto;
 
     /**
      * Human Controllers
@@ -99,7 +101,12 @@ public class RobotContainer {
     /**
      * Choosers
      */
+    // Drive Chooser
     private final SendableChooser<Command> driveCommandChooser = new SendableChooser<Command>();
+
+    // Auto Chooser
+    private final SendableChooser<Command> autoCommandChooser = new SendableChooser<Command>();
+    
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -152,6 +159,7 @@ public class RobotContainer {
         /**
          * Init Auto
          */
+        testAuto = new TestAuto(m_driveSystem);
 
         /**
          * Init Choosers
@@ -160,6 +168,10 @@ public class RobotContainer {
         driveCommandChooser.addOption("Normal Drive", normalArcadeDriveCommand);
         driveCommandChooser.setDefaultOption("Velocity Drive", velocityArcadeDriveCommand);
         SmartDashboard.putData(driveCommandChooser);
+
+        // Auto Command Chooser
+        autoCommandChooser.setDefaultOption("Test Auto", testAuto);
+        SmartDashboard.putData(autoCommandChooser);
 
         /**
          * Configure Button Bindings
@@ -225,10 +237,6 @@ public class RobotContainer {
 
     // Return Auto Command
     public Command getAutonomousCommand() {
-        return new DriveDistance(3, m_driveSystem).andThen(new DriveTurn(90, m_driveSystem))
-                .andThen(new DriveDistance(2, m_driveSystem)).andThen(new DriveTurn(90, m_driveSystem))
-                .andThen(new DriveDistance(-1, m_driveSystem)).andThen(new DriveDistance(1, m_driveSystem))
-                .andThen(new DriveTurn(90, m_driveSystem)).andThen(new DriveTurn(90, m_driveSystem))
-                .andThen(new DriveDistance(1, m_driveSystem)).andThen(new DriveDistance(-2, m_driveSystem));
+        return autoCommandChooser.getSelected();
     }
 }

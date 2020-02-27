@@ -50,7 +50,7 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         if (control.x == 0.0) {
             if (!setSetpoint) {
                 if (prevGyroValue == m_subsystem.ahrs.getYaw()) {
-                    if (waitCounter > 3) {
+                    if (waitCounter >= 4) {
                         m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
                         setSetpoint = true;
                     } else {

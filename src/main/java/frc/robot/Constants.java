@@ -32,26 +32,26 @@ public final class Constants {
         }
 
         public static class Flywheel{
-            public static int motor = 0;
+            public static int motor = 4;
         }
 
         public static class ControlPanel{
-            public static int motor = 1;
+            public static int motor = 5;
         }
 
         public static class Intake{
-            public static int motor = 2;
+            public static int motor = 6;
         }
 
         public static class Hopper {
-            public static int motor = 3;
+            public static int motor = 7;
         }
 
         public static class Climb {
-            public static int master = 0;
-            public static int slave1 = 1;
-            public static int slave2 = 2;
-            public static int slave3 = 3;
+            public static int master = 8;
+            public static int slave1 = 9;
+            public static int slave2 = 10;
+            public static int slave3 = 11;
         }
     }
 

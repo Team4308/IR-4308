@@ -33,19 +33,18 @@ public class DriveTurn extends CommandBase {
 
     @Override
     public void execute() {
-        double encoderDistance = -(22.1
+        double encoderDistance = -(22.625 * Math.PI
                 / Constants.Config.Drive.Kinematics.kEncoderInchesPerCount);
         encoderDistance /= Constants.Config.Drive.Kinematics.kGearRatio;
-        encoderDistance *= Math.PI;
-        encoderDistance /= 2;
+        encoderDistance *= this.angle / 360;
 
         m_subsystem.masterLeft.set(TalonFXControlMode.MotionMagic, encoderDistance);
         m_subsystem.masterRight.set(TalonFXControlMode.MotionMagic, -encoderDistance);
 
-        if (m_subsystem.masterLeft.getActiveTrajectoryPosition() < encoderDistance + 4
-                && m_subsystem.masterLeft.getActiveTrajectoryPosition() > encoderDistance - 4
-                && m_subsystem.masterRight.getActiveTrajectoryPosition() < -encoderDistance + 4
-                && m_subsystem.masterRight.getActiveTrajectoryPosition() > -encoderDistance - 4) {
+        if (m_subsystem.masterLeft.getActiveTrajectoryPosition() < encoderDistance + 1
+                && m_subsystem.masterLeft.getActiveTrajectoryPosition() > encoderDistance - 1
+                && m_subsystem.masterRight.getActiveTrajectoryPosition() < -encoderDistance + 1
+                && m_subsystem.masterRight.getActiveTrajectoryPosition() > -encoderDistance - 1) {
             withinThresholdLoops += 1;
         } else {
             withinThresholdLoops = 0;
