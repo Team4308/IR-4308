@@ -26,6 +26,7 @@ import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.commands.auto.DriveDistance;
 import frc.robot.commands.auto.DriveTurn;
 import frc.robot.commands.auto.groups.TestAuto;
+import frc.robot.commands.auto.groups.TestMotionProfile;
 import frc.robot.subsystems.sensors.ColorSensor;
 import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.ControlPanelSystem;
@@ -91,6 +92,7 @@ public class RobotContainer {
      * Auto
      */
     private final TestAuto testAuto;
+    private final TestMotionProfile testMotionProfile;
 
     /**
      * Human Controllers
@@ -160,6 +162,7 @@ public class RobotContainer {
          * Init Auto
          */
         testAuto = new TestAuto(m_driveSystem);
+        testMotionProfile = new TestMotionProfile(m_driveSystem);
 
         /**
          * Init Choosers
@@ -170,6 +173,7 @@ public class RobotContainer {
         SmartDashboard.putData(driveCommandChooser);
 
         // Auto Command Chooser
+        autoCommandChooser.addOption("Test Motion Profile", testMotionProfile);
         autoCommandChooser.setDefaultOption("Test Auto", testAuto);
         SmartDashboard.putData(autoCommandChooser);
 
