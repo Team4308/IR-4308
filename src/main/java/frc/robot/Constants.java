@@ -122,23 +122,23 @@ public final class Constants {
             public static class GyroControl {
                 public static double kP = 0.006;
                 public static double kI = 0.001;
-                public static double kD = 0.0001;
+                public static double kD = 0.0;
 
-                public static double kToleranceDegrees = 10.0;
+                public static double kToleranceDegrees = 1.0;
             }
 
             public static class VelocityControl {
                 public static int profileSlot = 0;
 
                 public static class Left {
-                    public static double kP = 0.2;
+                    public static double kP = 0.1;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0468;
                 }
 
                 public static class Right {
-                    public static double kP = 0.2;
+                    public static double kP = 0.1;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0468;
@@ -188,8 +188,8 @@ public final class Constants {
 
     public static class DynConfig {
         public static class Drive {
-            public static double VelocityDriveRPM = 6379;
-            public static double GyroTurnSpeed = 8;
+            public static double VelocityDriveRPM = 4000;
+            public static double GyroTurnSpeed = 4;
         }
 
         public static class Flywheel{

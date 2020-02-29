@@ -31,6 +31,8 @@ public class MotionStream {
 
             double[][] doubleArray = new double[3][pointArray.size()];
             pointArray.toArray(doubleArray);
+
+            initBuffer(doubleArray);
         } catch (Exception e) {
             e.printStackTrace();
         }
