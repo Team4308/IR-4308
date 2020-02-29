@@ -188,7 +188,7 @@ public final class Constants {
 
     public static class DynConfig {
         public static class Drive {
-            public static double VelocityDriveRPM = 4000;
+            public static double VelocityDriveRPM = 5500;
             public static double GyroTurnSpeed = 4;
         }
 
