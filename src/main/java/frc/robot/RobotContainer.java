@@ -32,6 +32,7 @@ import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.ControlPanelSystem;
 import frc.robot.subsystems.FlywheelSystem;
 import frc.robot.subsystems.HopperSystem;
+import frc.robot.subsystems.IntakePneumaticsSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
@@ -61,6 +62,9 @@ public class RobotContainer {
 
     // Intake
     private final IntakeSystem m_intakeSystem;
+
+    // Intake Pneumatics
+    private final IntakePneumaticsSystem m_intakePneumaticsSystem;
 
     // Flywheel
     private final FlywheelSystem m_flywheelSystem;
@@ -129,6 +133,9 @@ public class RobotContainer {
         m_intakeSystem = new IntakeSystem();
         subsystems.add(m_intakeSystem);
 
+        m_intakePneumaticsSystem = new IntakePneumaticsSystem();
+        subsystems.add(m_intakePneumaticsSystem);
+
         m_flywheelSystem = new FlywheelSystem();
         subsystems.add(m_flywheelSystem);
 
@@ -137,6 +144,8 @@ public class RobotContainer {
 
         m_climbSystem = new ClimbSystem();
         subsystems.add(m_climbSystem);
+
+        
 
         /**
          * Init Commands
@@ -191,6 +200,7 @@ public class RobotContainer {
         controlStick.RB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
         controlStick.LB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
         controlStick.A.whenPressed(new InstantCommand(() -> m_hopperSystem.motorControl(), m_hopperSystem));
+        controlStick.B.whenPressed(new InstantCommand(() -> m_intakePneumaticsSystem.extend(), m_intakePneumaticsSystem));
     }
 
     /**
