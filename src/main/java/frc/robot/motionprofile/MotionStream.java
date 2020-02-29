@@ -18,7 +18,7 @@ public class MotionStream {
     public MotionStream(String profileFileName) {
         internal_stream = new BufferedTrajectoryPointStream();
 
-        File file = new File(Filesystem.getDeployDirectory().getAbsolutePath() + profileFileName + ".csv");
+        File file = new File(Filesystem.getDeployDirectory().getAbsolutePath() + "/" + profileFileName + ".csv");
 
         try (BufferedReader csvReader = new BufferedReader(new FileReader(file))) {
             ArrayList<double[]> pointArray = new ArrayList<double[]>();
