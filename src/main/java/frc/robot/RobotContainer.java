@@ -203,7 +203,7 @@ public class RobotContainer {
 
         bbbVector2 control = new bbbVector2(turn, throttle);
         control = JoystickHelper.ScaledAxialDeadzone(control);
-        control = JoystickHelper.alternateScaleStick(control, 2);
+        control = JoystickHelper.alternateScaleStick(control, 1.5);
         control = JoystickHelper.clampStick(control);
 
         return control;
