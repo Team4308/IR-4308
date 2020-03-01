@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.util.Color;
  */
 public final class Constants {
     public static class Mapping {
+        public static int PCM_ID = 0;
+
         public static class Drive {
             public static int frontLeft = 0;
             public static int backLeft = 2;
@@ -41,6 +43,13 @@ public final class Constants {
 
         public static class Intake{
             public static int motor = 6;
+        }
+
+        public static class IntakePneumatics{
+            public static int solenoidLeftIn = 0;
+            public static int solenoidLeftOut = 1;
+            public static int solenoidRightIn = 2;
+            public static int solenoidRightOut = 3;
         }
 
         public static class Hopper {
