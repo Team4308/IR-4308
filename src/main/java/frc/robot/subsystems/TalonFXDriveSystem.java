@@ -92,7 +92,7 @@ public class TalonFXDriveSystem extends LogSubsystem {
             talon.configOpenloopRamp(Constants.Config.Drive.Power.kOpenLoopRamp, Constants.Generic.timeoutMs);
             talon.configStatorCurrentLimit(Constants.Config.Drive.Power.kStatorCurrentLimit,
                     Constants.Generic.timeoutMs);
-            talon.setNeutralMode(NeutralMode.Coast);
+            talon.setNeutralMode(NeutralMode.Brake);
         }
         
         // Configure Primary Closed Loop Sensor

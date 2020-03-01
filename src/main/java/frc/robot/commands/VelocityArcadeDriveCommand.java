@@ -33,7 +33,9 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     public void initialize() {
         this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
         m_subsystem.stopControllers();
-        m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getAngle());
+        m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
+        waitCounter = 0;
+        setSetpoint = true;
         prevGyroValue = m_subsystem.ahrs.getYaw();
 
         m_subsystem.driveMode = DrivetrainMode.VELOCITY;
@@ -50,7 +52,7 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         if (control.x == 0.0) {
             if (!setSetpoint) {
                 if (prevGyroValue == m_subsystem.ahrs.getYaw()) {
-                    if (waitCounter >= 4) {
+                    if (waitCounter >= 2) {
                         m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
                         setSetpoint = true;
                     } else {
@@ -81,6 +83,11 @@ public class VelocityArcadeDriveCommand extends CommandBase {
 
         m_subsystem.masterLeft.set(TalonFXControlMode.Velocity, leftTargetUnitsPS);
         m_subsystem.masterRight.set(TalonFXControlMode.Velocity, rightTargetUnitsPS);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
     }
 
 }

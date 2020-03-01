@@ -29,7 +29,7 @@ public class MotionStream {
                 pointArray.add(point);
             }
 
-            double[][] doubleArray = new double[3][pointArray.size()];
+            double[][] doubleArray = new double[pointArray.size()][3];
             pointArray.toArray(doubleArray);
 
             initBuffer(doubleArray);
@@ -44,9 +44,10 @@ public class MotionStream {
         TrajectoryPoint tpoint = new TrajectoryPoint();
 
         for (int i = 0; i < length; i++) {
-            double position = points[0][i];
-            double velocity = points[1][i];
-            int duration = (int)points[2][i];
+            System.out.println("Pos: " + points[i][0] + " | Vel: " + points[i][1] + " | Rot: " + points[i][2]);
+            double position = points[i][0];
+            double velocity = points[i][1];
+            int duration = (int)points[i][2];
 
             tpoint.timeDur = duration;
             tpoint.position = position * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation;

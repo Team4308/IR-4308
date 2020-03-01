@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
 public class MotionProfileCommand extends CommandBase {
@@ -22,8 +23,16 @@ public class MotionProfileCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.MotionProfile.profileSlot, 0);
+        this.m_subsystem.masterRight.selectProfileSlot(Constants.Config.Drive.MotionProfile.profileSlot, 0);
         this.m_subsystem.masterLeft.startMotionProfile(profileLeft.getStream(), 10, ControlMode.MotionProfile);
         this.m_subsystem.masterRight.startMotionProfile(profileRight.getStream(), 10, ControlMode.MotionProfile);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
+        this.m_subsystem.masterRight.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
     }
 
     @Override
