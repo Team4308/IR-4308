@@ -77,8 +77,8 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
                 }
 
                 // Set Invert Mode
-                masterLeft.setInverted(TalonFXInvertType.Clockwise);
-                masterRight.setInverted(TalonFXInvertType.CounterClockwise);
+                masterLeft.setInverted(TalonFXInvertType.CounterClockwise);
+                masterRight.setInverted(TalonFXInvertType.Clockwise);
 
                 // Set slaves to follow masters
                 slaveLeft.follow(masterLeft);

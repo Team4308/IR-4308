@@ -33,7 +33,7 @@ public class DriveDistance extends CommandBase {
 
     @Override
     public void execute() {
-        double encoderDistance = -(Units.metersToInches(this.meters)
+        double encoderDistance = (Units.metersToInches(this.meters)
                 / Constants.Config.Drive.Kinematics.kEncoderInchesPerCount);
         encoderDistance /= Constants.Config.Drive.Kinematics.kGearRatio;
 

@@ -209,8 +209,8 @@ public class RobotContainer {
      */
     // Drive Control
     public bbbVector2 getDriveControl() {
-        double throttle = bbbDoubleUtils.normalize(driveStick.getLeftY());
-        double turn = bbbDoubleUtils.normalize(-driveStick.getRightX());
+        double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
+        double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
 
         bbbVector2 control = new bbbVector2(turn, throttle);
         control = JoystickHelper.ScaledAxialDeadzone(control);

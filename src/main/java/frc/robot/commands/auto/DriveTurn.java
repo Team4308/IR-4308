@@ -2,7 +2,6 @@ package frc.robot.commands.auto;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
@@ -33,7 +32,7 @@ public class DriveTurn extends CommandBase {
 
     @Override
     public void execute() {
-        double encoderDistance = -(22.625 * Math.PI
+        double encoderDistance = (22.625 * Math.PI
                 / Constants.Config.Drive.Kinematics.kEncoderInchesPerCount);
         encoderDistance /= Constants.Config.Drive.Kinematics.kGearRatio;
         encoderDistance *= this.angle / 360;
