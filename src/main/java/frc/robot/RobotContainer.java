@@ -36,6 +36,7 @@ import frc.robot.subsystems.IntakePneumaticsSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -215,6 +216,12 @@ public class RobotContainer {
         control = JoystickHelper.ScaledAxialDeadzone(control);
         control = JoystickHelper.alternateScaleStick(control, 1.5);
         control = JoystickHelper.clampStick(control);
+
+        if (!JoystickHelper.isStickCentered(control) && !ahrs.isMoving()) {
+            driveStick.joystick.setRumble(RumbleType.kLeftRumble, 1.0);
+        } else {
+            driveStick.joystick.setRumble(RumbleType.kLeftRumble, 0.0);
+        }
 
         return control;
     }

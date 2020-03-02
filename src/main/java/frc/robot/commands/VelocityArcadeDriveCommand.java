@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
@@ -81,8 +82,8 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         double leftTargetUnitsPS = (leftTargetRPM / 600.0) * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
         double rightTargetUnitsPS = (rightTargetRPM / 600.0) * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
 
-        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity, leftTargetUnitsPS);
-        m_subsystem.masterRight.set(TalonFXControlMode.Velocity, rightTargetUnitsPS);
+        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity, leftTargetUnitsPS / 12.5 / RobotController.getBatteryVoltage());
+        m_subsystem.masterRight.set(TalonFXControlMode.Velocity, rightTargetUnitsPS / 12.5 / RobotController.getBatteryVoltage());
     }
 
     @Override

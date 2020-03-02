@@ -8,8 +8,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
 public class MotionProfileCommand extends CommandBase {
-    protected MotionStream profileLeft;
-    protected MotionStream profileRight;
+    private MotionStream profileLeft;
+    private MotionStream profileRight;
 
     private TalonFXDriveSystem m_subsystem;
 
@@ -23,16 +23,18 @@ public class MotionProfileCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        this.m_subsystem.resetSensors();
         this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.MotionProfile.profileSlot, 0);
         this.m_subsystem.masterRight.selectProfileSlot(Constants.Config.Drive.MotionProfile.profileSlot, 0);
-        this.m_subsystem.masterLeft.startMotionProfile(profileLeft.getStream(), 10, ControlMode.MotionProfile);
-        this.m_subsystem.masterRight.startMotionProfile(profileRight.getStream(), 10, ControlMode.MotionProfile);
+        this.m_subsystem.masterLeft.startMotionProfile(profileLeft.internal_stream, 10, ControlMode.MotionProfile);
+        this.m_subsystem.masterRight.startMotionProfile(profileRight.internal_stream, 10, ControlMode.MotionProfile);
     }
 
     @Override
     public void end(boolean interrupted) {
         this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
         this.m_subsystem.masterRight.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
+        this.m_subsystem.stopControllers();
     }
 
     @Override

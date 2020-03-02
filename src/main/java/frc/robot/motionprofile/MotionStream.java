@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants;
 
 public class MotionStream {
-    private final BufferedTrajectoryPointStream internal_stream;
+    public BufferedTrajectoryPointStream internal_stream;
 
     public MotionStream(String profileFileName) {
         internal_stream = new BufferedTrajectoryPointStream();
@@ -44,14 +44,14 @@ public class MotionStream {
         TrajectoryPoint tpoint = new TrajectoryPoint();
 
         for (int i = 0; i < length; i++) {
-            System.out.println("Pos: " + points[i][0] + " | Vel: " + points[i][1] + " | Rot: " + points[i][2]);
+            //System.out.println("Pos: " + points[i][0] + " | Vel: " + points[i][1] + " | Dur: " + points[i][2]);
             double position = points[i][0];
             double velocity = points[i][1];
             int duration = (int)points[i][2];
 
             tpoint.timeDur = duration;
-            tpoint.position = position * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation;
-            tpoint.velocity = velocity * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation / 600.0;
+            tpoint.position = (-1 * position / Constants.Config.Drive.Kinematics.kGearRatio) * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
+            tpoint.velocity = ((-1 * velocity) * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
 
             tpoint.auxiliaryPos = 0.0;
             tpoint.auxiliaryVel = 0.0;
@@ -63,9 +63,5 @@ public class MotionStream {
 
             internal_stream.Write(tpoint);
         }
-    }
-
-    public BufferedTrajectoryPointStream getStream() {
-        return internal_stream;
     }
 }

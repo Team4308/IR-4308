@@ -118,11 +118,12 @@ public final class Constants {
                 public static final double kSensorUnitsPerRotation = 2048; //2048 for talonfx
                 public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
 
-                public static final double kGearRatio = 0.088888888888888;
+                public static final double kGearRatio = (12.0 * 20.0) / (50.0 * 54.0);
             }
 
             public static class Power {
                 public static double kOpenLoopRamp = 0.0;
+                public static double kClosedLoopRamp = 0.0;
 
                 public static StatorCurrentLimitConfiguration kStatorCurrentLimit = new StatorCurrentLimitConfiguration(
                         true, 30, 35, 100);
@@ -130,7 +131,7 @@ public final class Constants {
 
             public static class GyroControl {
                 public static double kP = 0.006;
-                public static double kI = 0.001;
+                public static double kI = 0.01;
                 public static double kD = 0.0;
 
                 public static double kToleranceDegrees = 1.0;
@@ -178,15 +179,17 @@ public final class Constants {
             public static class MotionProfile {
                 public static int profileSlot = 2;
 
+                public static double kToleranceDegrees = 1.0;
+
                 public static class Left {
-                    public static double kP = 0.2;
+                    public static double kP = 0.5;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
                 }
 
                 public static class Right {
-                    public static double kP = 0.2;
+                    public static double kP = 0.5;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
