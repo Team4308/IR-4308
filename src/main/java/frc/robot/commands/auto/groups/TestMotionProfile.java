@@ -1,6 +1,5 @@
 package frc.robot.commands.auto.groups;
 
-import bbb.path.Gains;
 import bbb.path.PathFollowerSettings;
 import bbb.path.UltraPathFollower;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
