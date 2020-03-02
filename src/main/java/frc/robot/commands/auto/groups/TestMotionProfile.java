@@ -1,15 +1,20 @@
 package frc.robot.commands.auto.groups;
 
+import bbb.path.Gains;
+import bbb.path.PathFollowerSettings;
+import bbb.path.UltraPathFollower;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.motionprofile.MotionProfileCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
 public class TestMotionProfile extends SequentialCommandGroup {
 
     public TestMotionProfile(TalonFXDriveSystem driveSystem) {
-        addCommands(
-            new MotionProfileCommand("test", driveSystem)
-        );
+        addCommands(new UltraPathFollower("test",
+                new PathFollowerSettings(Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation,
+                        Constants.Config.Drive.MotionProfile.leftGains, Constants.Config.Drive.MotionProfile.rightGains,
+                        Constants.Config.Drive.MotionProfile.turnGains, Constants.Config.Drive.MotionProfile.period),
+                driveSystem));
     }
-    
+
 }

@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
-import bbb.enums.DriveMode;
 import bbb.wrapper.TankDriveSubsystem;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -24,33 +23,33 @@ import frc.robot.Constants;
 import frc.robot.enums.DrivetrainMode;
 
 public class TalonFXDriveSystem extends TankDriveSubsystem {
-        // Master Controllers
-        public final TalonFX masterLeft, masterRight;
-        // Slave Controllers
-        private final TalonFX slaveLeft, slaveRight;
+    // Master Controllers
+    public final TalonFX masterLeft, masterRight;
+    // Slave Controllers
+    private final TalonFX slaveLeft, slaveRight;
 
-        // Controllers
-        private ArrayList<TalonFX> controllers = new ArrayList<TalonFX>();
+    // Controllers
+    private ArrayList<TalonFX> controllers = new ArrayList<TalonFX>();
 
-        // AHRS
-        public final AHRS ahrs;
+    // AHRS
+    public final AHRS ahrs;
 
-        // Current Drive Mode
-        public DrivetrainMode driveMode = DrivetrainMode.VELOCITY;
+    // Current Drive Mode
+    public DrivetrainMode driveMode = DrivetrainMode.VELOCITY;
 
-        // Drivetrain Kinematics
-        private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
-                        Constants.Config.Drive.Kinematics.kTrackWidth);
+    // Drivetrain Kinematics
+    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+            Constants.Config.Drive.Kinematics.kTrackWidth);
 
-        // Drivetrain Odometry
-        private final DifferentialDriveOdometry odometry;
+    // Drivetrain Odometry
+    private final DifferentialDriveOdometry odometry;
 
-        // Turn PID Controller (Velocity)
-        public final PIDController turnController = new PIDController(Constants.Config.Drive.GyroControl.kP,
-                        Constants.Config.Drive.GyroControl.kI, Constants.Config.Drive.GyroControl.kD);
+    // Turn PID Controller (Velocity)
+    public final PIDController turnController = new PIDController(Constants.Config.Drive.GyroControl.kP,
+            Constants.Config.Drive.GyroControl.kI, Constants.Config.Drive.GyroControl.kD);
 
-        // Init
-        public TalonFXDriveSystem(AHRS ahrs) {
+    // Init
+    public TalonFXDriveSystem(AHRS ahrs) {
                 // Setup and Add Controllers
                 masterLeft = new TalonFX(Constants.Mapping.Drive.frontLeft);
                 controllers.add(masterLeft);
@@ -100,7 +99,7 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
                         talon.setNeutralMode(NeutralMode.Brake);
                         talon.configNeutralDeadband(0.001, Constants.Generic.timeoutMs);
                         talon.changeMotionControlFramePeriod(5);
-                        talon.configVoltageCompSaturation(12.5, Constants.Generic.timeoutMs)
+                        talon.configVoltageCompSaturation(12.5, Constants.Generic.timeoutMs);
                         talon.enableVoltageCompensation(true);
                 }
 
@@ -160,98 +159,81 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
                 masterRight.config_kF(Constants.Config.Drive.MotionMagic.profileSlot,
                                 Constants.Config.Drive.MotionMagic.Right.kF, Constants.Generic.timeoutMs);
 
-                masterLeft.config_kP(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kP, Constants.Generic.timeoutMs);
-                masterLeft.config_kI(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kI, Constants.Generic.timeoutMs);
-                masterLeft.config_kD(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kD, Constants.Generic.timeoutMs);
-                masterLeft.config_kF(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kF, Constants.Generic.timeoutMs);
-
-                masterRight.config_kP(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kP, Constants.Generic.timeoutMs);
-                masterRight.config_kI(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kI, Constants.Generic.timeoutMs);
-                masterRight.config_kD(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kD, Constants.Generic.timeoutMs);
-                masterRight.config_kF(Constants.Config.Drive.MotionProfile.profileSlot,
-                                Constants.Config.Drive.MotionProfile.Right.kF, Constants.Generic.timeoutMs);
-
                 // Reset
                 stopControllers();
                 resetSensors();
         }
 
-        // Periodic Loop
-        @Override
-        public void periodic() {
-                // Update odometry
-                odometry.update(Rotation2d.fromDegrees(ahrs.getAngle()), Units.inchesToMeters(getLeftSensorPosition()),
-                                Units.inchesToMeters(getRightSensorPosition()));
-        }
+    // Periodic Loop
+    @Override
+    public void periodic() {
+        // Update odometry
+        odometry.update(Rotation2d.fromDegrees(ahrs.getAngle()),
+                Units.inchesToMeters(
+                        getLeftSensorPosition() * Constants.Config.Drive.Kinematics.kEncoderInchesPerCount),
+                Units.inchesToMeters(
+                        getRightSensorPosition() * Constants.Config.Drive.Kinematics.kEncoderInchesPerCount));
+    }
 
-        /**
-         * Getters And Setters
-         */
+    /**
+     * Getters And Setters
+     */
 
-        public double getLeftSensorPosition() {
-                return masterLeft.getSelectedSensorPosition(0)
-                                * Constants.Config.Drive.Kinematics.kEncoderInchesPerCount;
-        }
+    public double getLeftSensorPosition() {
+        return masterLeft.getSelectedSensorPosition(0);
+    }
 
-        public double getRightSensorPosition() {
-                return masterRight.getSelectedSensorPosition(0)
-                                * Constants.Config.Drive.Kinematics.kEncoderInchesPerCount;
-        }
+    public double getRightSensorPosition() {
+        return masterRight.getSelectedSensorPosition(0);
+    }
 
-        public double getLeftSensorVelocity() {
-                return masterLeft.getSelectedSensorVelocity(0);
-        }
+    public double getLeftSensorVelocity() {
+        return masterLeft.getSelectedSensorVelocity(0);
+    }
 
-        public double getRightSensorVelocity() {
-                return masterRight.getSelectedSensorVelocity(0);
-        }
+    public double getRightSensorVelocity() {
+        return masterRight.getSelectedSensorVelocity(0);
+    }
 
-        /**
-         * Misc Stuff
-         */
+    /**
+     * Misc Stuff
+     */
 
-        public void stopControllers() {
-                masterLeft.set(TalonFXControlMode.PercentOutput, 0.0);
-                masterRight.set(TalonFXControlMode.PercentOutput, 0.0);
-        }
+    public void stopControllers() {
+        masterLeft.set(TalonFXControlMode.PercentOutput, 0.0);
+        masterRight.set(TalonFXControlMode.PercentOutput, 0.0);
+    }
 
-        // Sensor Reset
-        public void resetSensors() {
-                masterLeft.setSelectedSensorPosition(0);
-                masterRight.setSelectedSensorPosition(0);
-                turnController.reset();
-                ahrs.reset();
-        }
+    // Sensor Reset
+    public void resetSensors() {
+        masterLeft.setSelectedSensorPosition(0);
+        masterRight.setSelectedSensorPosition(0);
+        turnController.reset();
+        ahrs.reset();
+    }
 
-        @Override
-        public Sendable log() {
-                Shuffleboard.getTab("Log").addNumber("TurnC SP", () -> turnController.getSetpoint());
-                Shuffleboard.getTab("Log").addNumber("Left Vel", () -> ((getLeftSensorVelocity()
-                                / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
-                Shuffleboard.getTab("Log").addNumber("Right Vel", () -> ((getRightSensorVelocity()
-                                / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
-                Shuffleboard.getTab("Log").addNumber("Left Pos", () -> getLeftSensorPosition());
-                Shuffleboard.getTab("Log").addNumber("Right Pos", () -> getRightSensorPosition());
+    @Override
+    public Sendable log() {
+        Shuffleboard.getTab("Log").addNumber("TurnC SP", () -> turnController.getSetpoint());
+        Shuffleboard.getTab("Log").addNumber("Left Vel",
+                () -> ((getLeftSensorVelocity() / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
+        Shuffleboard.getTab("Log").addNumber("Right Vel",
+                () -> ((getRightSensorVelocity() / Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation) * 600));
+        Shuffleboard.getTab("Log").addNumber("Left Pos", () -> getLeftSensorPosition());
+        Shuffleboard.getTab("Log").addNumber("Right Pos", () -> getRightSensorPosition());
 
-                return this;
-        }
+        return this;
+    }
 
-        @Override
-        public void setMotorOutput(ControlMode mode, double left, double right) {
-            masterLeft.set(mode, left);
-            masterRight.set(mode, right);
-        }
+    @Override
+    public void setMotorOutput(ControlMode mode, double left, double right) {
+        masterLeft.set(mode, left);
+        masterRight.set(mode, right);
+    }
 
-        @Override
-        public AHRS getAhrs() {
-            return ahrs;
-        }
+    @Override
+    public AHRS getAhrs() {
+        return ahrs;
+    }
 
 }

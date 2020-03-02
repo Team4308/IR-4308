@@ -10,6 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.revrobotics.ColorMatch;
 
+import bbb.path.Gains;
 import edu.wpi.first.wpilibj.util.Color;
 
 /**
@@ -177,23 +178,41 @@ public final class Constants {
             }
 
             public static class MotionProfile {
-                public static int profileSlot = 2;
-
                 public static double kToleranceDegrees = 1.0;
+                public static int period = 10; // In milliseconds
 
                 public static class Left {
-                    public static double kP = 0.5;
+                    public static double kP = 0.1;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
+                    public static double kV = 0.0;
+                    public static double ka = 0.0;
                 }
 
+                public static Gains leftGains = new Gains(Left.kP, Left.kI, Left.kD, Left.kF, Left.kV, Left.ka);
+
                 public static class Right {
-                    public static double kP = 0.5;
+                    public static double kP = 0.1;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
+                    public static double kV = 0.0;
+                    public static double ka = 0.0;
                 }
+
+                public static Gains rightGains = new Gains(Right.kP, Right.kI, Right.kD, Right.kF, Right.kV, Right.ka);
+
+                public static class Turn {
+                    public static double kP = 0.01;
+                    public static double kI = 0.0;
+                    public static double kD = 0.0;
+                    public static double kF = 0.0;
+                    public static double kV = 0.0;
+                    public static double ka = 0.0;
+                }
+
+                public static Gains turnGains = new Gains(Turn.kP, Turn.kI, Turn.kD, Turn.kF, Turn.kV, Turn.ka);
             }
         }
     }

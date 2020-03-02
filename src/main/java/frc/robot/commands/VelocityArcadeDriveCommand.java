@@ -65,8 +65,10 @@ public class VelocityArcadeDriveCommand extends CommandBase {
             } else {
                 double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
 
-                leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
-                rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1) * Constants.DynConfig.Drive.VelocityDriveRPM;
+                leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1)
+                        * Constants.DynConfig.Drive.VelocityDriveRPM;
+                rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1)
+                        * Constants.DynConfig.Drive.VelocityDriveRPM;
             }
         } else {
             leftTargetRPM += control.x * Constants.DynConfig.Drive.VelocityDriveRPM;
@@ -76,14 +78,20 @@ public class VelocityArcadeDriveCommand extends CommandBase {
             setSetpoint = false;
         }
 
-        leftTargetRPM = bbbDoubleUtils.clamp(leftTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
-        rightTargetRPM = bbbDoubleUtils.clamp(rightTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM, Constants.DynConfig.Drive.VelocityDriveRPM);
-        
-        double leftTargetUnitsPS = (leftTargetRPM / 600.0) * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
-        double rightTargetUnitsPS = (rightTargetRPM / 600.0) * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
+        leftTargetRPM = bbbDoubleUtils.clamp(leftTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM,
+                Constants.DynConfig.Drive.VelocityDriveRPM);
+        rightTargetRPM = bbbDoubleUtils.clamp(rightTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM,
+                Constants.DynConfig.Drive.VelocityDriveRPM);
 
-        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity, leftTargetUnitsPS / 12.5 / RobotController.getBatteryVoltage());
-        m_subsystem.masterRight.set(TalonFXControlMode.Velocity, rightTargetUnitsPS / 12.5 / RobotController.getBatteryVoltage());
+        double leftTargetUnitsPS = (leftTargetRPM / 600.0)
+                * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
+        double rightTargetUnitsPS = (rightTargetRPM / 600.0)
+                * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
+
+        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity,
+                leftTargetUnitsPS / 12.5 / RobotController.getBatteryVoltage());
+        m_subsystem.masterRight.set(TalonFXControlMode.Velocity,
+                rightTargetUnitsPS / 12.5 / RobotController.getBatteryVoltage());
     }
 
     @Override
