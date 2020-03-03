@@ -6,6 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 public abstract class TankDriveSubsystem extends LogSubsystem {
     public abstract void setMotorOutput(ControlMode mode, double left, double right);
 
+    public abstract void selectProfileSlot(int slot);
     public abstract void resetSensors();
 
     public abstract double getLeftSensorPosition();

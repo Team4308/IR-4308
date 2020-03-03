@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.revrobotics.ColorMatch;
 
 import bbb.path.Gains;
+import bbb.path.PathFollowerSettings;
 import edu.wpi.first.wpilibj.util.Color;
 
 /**
@@ -34,19 +35,19 @@ public final class Constants {
             public static int backRight = 3;
         }
 
-        public static class Flywheel{
+        public static class Flywheel {
             public static int motor = 4;
         }
 
-        public static class ControlPanel{
+        public static class ControlPanel {
             public static int motor = 5;
         }
 
-        public static class Intake{
+        public static class Intake {
             public static int motor = 6;
         }
 
-        public static class IntakePneumatics{
+        public static class IntakePneumatics {
             public static int solenoidLeftIn = 0;
             public static int solenoidLeftOut = 1;
             public static int solenoidRightIn = 2;
@@ -90,20 +91,20 @@ public final class Constants {
             public static double kOpenLoopRamp = 0.0;
         }
 
-        public static class Flywheel{
+        public static class Flywheel {
             public static double kOpenLoopRamp = 0.0;
 
             public static class VelocityControl {
                 public static int profileSlot = 0;
                 public static final double kSensorUnitsPerRotation = 4096;
-                
+
                 public static double kP = 0.1;
                 public static double kI = 0.0;
                 public static double kD = 0.0;
                 public static double kF = 0.0;
             }
         }
-      
+
         public static class Hopper {
             public static double kOpenLoopRamp = 0.0;
             public static double output = 1.0;
@@ -116,7 +117,7 @@ public final class Constants {
 
                 public static final double kWheelDiameter = 6; // In Inches
                 public static final double kInchesPerRotation = kWheelDiameter * Math.PI;
-                public static final double kSensorUnitsPerRotation = 2048; //2048 for talonfx
+                public static final double kSensorUnitsPerRotation = 2048; // 2048 for talonfx
                 public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
 
                 public static final double kGearRatio = (12.0 * 20.0) / (50.0 * 54.0);
@@ -127,7 +128,7 @@ public final class Constants {
                 public static double kClosedLoopRamp = 0.0;
 
                 public static StatorCurrentLimitConfiguration kStatorCurrentLimit = new StatorCurrentLimitConfiguration(
-                        true, 30, 35, 100);
+                        true, 35, 40, 100);
             }
 
             public static class GyroControl {
@@ -178,7 +179,6 @@ public final class Constants {
             }
 
             public static class MotionProfile {
-                public static double kToleranceDegrees = 1.0;
                 public static int period = 10; // In milliseconds
 
                 public static class Left {
@@ -186,8 +186,8 @@ public final class Constants {
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
-                    public static double kV = 0.0;
-                    public static double ka = 0.0;
+                    public static double kV = 0.01;
+                    public static double ka = 0.01;
                 }
 
                 public static Gains leftGains = new Gains(Left.kP, Left.kI, Left.kD, Left.kF, Left.kV, Left.ka);
@@ -197,8 +197,8 @@ public final class Constants {
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
-                    public static double kV = 0.0;
-                    public static double ka = 0.0;
+                    public static double kV = 0.01;
+                    public static double ka = 0.01;
                 }
 
                 public static Gains rightGains = new Gains(Right.kP, Right.kI, Right.kD, Right.kF, Right.kV, Right.ka);
@@ -208,11 +208,21 @@ public final class Constants {
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
-                    public static double kV = 0.0;
-                    public static double ka = 0.0;
+                    public static double kV = 0.01;
+                    public static double ka = 0.01;
+
+                    public static double kToleranceDegrees = 1.0;
                 }
 
-                public static Gains turnGains = new Gains(Turn.kP, Turn.kI, Turn.kD, Turn.kF, Turn.kV, Turn.ka);
+                public static Gains turnGains = new Gains(Turn.kP, Turn.kI, Turn.kD, Turn.kF, Turn.kV, Turn.ka,
+                        Turn.kToleranceDegrees);
+
+                public static PathFollowerSettings settings = new PathFollowerSettings(
+                        Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation,
+                        Constants.Config.Drive.Kinematics.kGearRatio, Constants.Config.Drive.MotionProfile.leftGains,
+                        Constants.Config.Drive.MotionProfile.rightGains, Constants.Config.Drive.MotionProfile.turnGains,
+                        Constants.Config.Drive.VelocityControl.profileSlot,
+                        Constants.Config.Drive.MotionProfile.period);
             }
         }
     }
@@ -223,7 +233,7 @@ public final class Constants {
             public static double GyroTurnSpeed = 4;
         }
 
-        public static class Flywheel{
+        public static class Flywheel {
             public static double RPM = 3000;
         }
     }

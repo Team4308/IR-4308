@@ -69,7 +69,7 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
                 // Turn PID Controller Config
                 turnController.enableContinuousInput(-180, 180);
                 turnController.setTolerance(Constants.Config.Drive.GyroControl.kToleranceDegrees / 5.4);
-                turnController.setSetpoint(ahrs.getAngle());
+                turnController.setSetpoint(ahrs.getYaw());
 
                 // Reset Config for all
                 for (TalonFX talon : controllers) {
@@ -234,6 +234,12 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
     @Override
     public AHRS getAhrs() {
         return ahrs;
+    }
+
+    @Override
+    public void selectProfileSlot(int slot) {
+        masterLeft.selectProfileSlot(slot, 0);
+        masterRight.selectProfileSlot(slot, 0);
     }
 
 }

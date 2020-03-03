@@ -33,6 +33,7 @@ public class VelocityArcadeDriveCommand extends CommandBase {
     @Override
     public void initialize() {
         this.m_subsystem.masterLeft.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
+        this.m_subsystem.masterRight.selectProfileSlot(Constants.Config.Drive.VelocityControl.profileSlot, 0);
         m_subsystem.stopControllers();
         m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
         waitCounter = 0;

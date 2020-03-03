@@ -15,8 +15,11 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 
+/**
+ * UltraPathFollower
+ * Paths must be generated with p,v,a,h
+ */
 public class UltraPathFollower extends CommandBase {
     private final double[][] leftPath, rightPath;
 
@@ -40,8 +43,8 @@ public class UltraPathFollower extends CommandBase {
 
         turnController = new PIDController(settings.turnGains.kP, settings.turnGains.kI, settings.turnGains.kD);
         turnController.enableContinuousInput(-180, 180);
-        turnController.setTolerance(Constants.Config.Drive.MotionProfile.kToleranceDegrees / 5.4);
-        turnController.setSetpoint(subsystem.getAhrs().getAngle());
+        turnController.setTolerance(settings.turnGains.tolerance / 5.4);
+        turnController.setSetpoint(subsystem.getAhrs().getYaw());
 
         addRequirements(subsystem);
     }
@@ -49,6 +52,7 @@ public class UltraPathFollower extends CommandBase {
     @Override
     public void initialize() {
         m_subsystem.resetSensors();
+        m_subsystem.selectProfileSlot(settings.profileSlot);
 
         isFinished = false;
         currentPoint = 0;
@@ -81,21 +85,36 @@ public class UltraPathFollower extends CommandBase {
             double leftGoalPos = leftPath[currentPoint][0];
             double leftGoalVel = leftPath[currentPoint][1];
             double leftGoalAcc = leftPath[currentPoint][2];
-            double leftGoalHead = leftPath[currentPoint][3];
+            double leftGoalAbsHead = leftPath[currentPoint][3];
+            double leftGoalRelHead = leftPath[currentPoint][4];
 
             double rightGoalPos = rightPath[currentPoint][0];
             double rightGoalVel = rightPath[currentPoint][1];
             double rightGoalAcc = rightPath[currentPoint][2];
-            double rightGoalHead = rightPath[currentPoint][3];
+            double rightGoalAbsHead = rightPath[currentPoint][3];
+            double rightGoalRelHead = leftPath[currentPoint][4];
 
-            double leftError = leftGoalPos - m_subsystem.getLeftSensorPosition();
+            double avgAbsHeading = (leftGoalAbsHead + rightGoalAbsHead) / 2;
+            double avgRelHeading = (leftGoalRelHead + rightGoalRelHead) / 2;
+
+            double turnEncoderAmt = (((22.68 * Math.PI / settings.kEncoderCountsPerRotation) / settings.kGearRatio) * (avgRelHeading / 360.0));
+
+            double adjLeftGoalPos = leftGoalPos - turnEncoderAmt;
+            double adjRightGoalPos = rightGoalPos + turnEncoderAmt;
+
+            double leftError = adjLeftGoalPos - m_subsystem.getLeftSensorPosition();
             double leftDerivError = ((leftError - leftPrevError) / settings.period) - leftGoalVel;
 
-            double rightError = rightGoalPos - m_subsystem.getRightSensorPosition();
+            double rightError = adjRightGoalPos - m_subsystem.getRightSensorPosition();
             double rightDerivError = ((rightError - rightPrevError) / settings.period) - rightGoalVel;
 
             double leftOutput = (settings.leftGains.kP * leftError) + (settings.leftGains.kD * leftDerivError) + (settings.leftGains.kV * leftGoalVel) + (settings.leftGains.ka * leftGoalAcc);
             double rightOutput = (settings.rightGains.kP * rightError) + (settings.rightGains.kD * rightDerivError) + (settings.rightGains.kV * rightGoalVel) + (settings.rightGains.ka * rightGoalAcc);
+
+            //double turnOutput = bbbDoubleUtils.clamp(turnController.calculate(m_subsystem.getAhrs().getAngle(), avgHeading), -1, 1);
+
+            //leftOutput += turnOutput;
+            //rightOutput -= turnOutput;
 
             leftOutput = bbbDoubleUtils.clamp(leftOutput, -1.0, 1.0);
             rightOutput = bbbDoubleUtils.clamp(rightOutput, -1.0, 1.0);
