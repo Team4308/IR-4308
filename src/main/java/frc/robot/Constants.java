@@ -44,7 +44,9 @@ public final class Constants {
         }
 
         public static class Intake {
-            public static int motor = 6;
+            public static int intakeMotor = 6;
+            public static int conveyorMotor = 7;
+            public static int hopperMotor = 8;
         }
 
         public static class IntakePneumatics {
@@ -54,15 +56,15 @@ public final class Constants {
             public static int solenoidRightOut = 3;
         }
 
-        public static class Hopper {
-            public static int motor = 7;
+        public static class Climb {
+            public static int master = 9;
+            public static int slave1 = 10;
+            public static int slave2 = 11;
+            public static int slave3 = 12;
         }
 
-        public static class Climb {
-            public static int master = 8;
-            public static int slave1 = 9;
-            public static int slave2 = 10;
-            public static int slave3 = 11;
+        public static class ClimbArm {
+            public static int motor = 13;
         }
     }
 
@@ -84,7 +86,6 @@ public final class Constants {
 
         public static class ControlPanel {
             public static double kOpenLoopRamp = 0.0;
-            public static double output = 0.25;
         }
 
         public static class Intake {

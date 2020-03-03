@@ -8,6 +8,7 @@
 package frc.robot;
 
 import bbb.wrapper.LogSubsystem;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
     public boolean log = true;
 
     PowerDistributionPanel pdp = new PowerDistributionPanel();
+    Compressor compressor = new Compressor();
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -47,6 +49,7 @@ public class Robot extends TimedRobot {
         if (log) {
             Shuffleboard.getTab("Log").addNumber("Joystick X", () -> m_robotContainer.getDriveControl().x).withWidget(BuiltInWidgets.kNumberBar);
             Shuffleboard.getTab("Log").addNumber("Joystick Y", () -> m_robotContainer.getDriveControl().y).withWidget(BuiltInWidgets.kNumberBar);
+            Shuffleboard.getTab("Log").addNumber("PDP Current", () -> pdp.getTotalCurrent()).withWidget(BuiltInWidgets.kGraph);
 
             for (LogSubsystem subsystem : m_robotContainer.subsystems) {
                 Shuffleboard.getTab("Log").add(subsystem.log());
@@ -73,9 +76,6 @@ public class Robot extends TimedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-
-        // Logging
-        SmartDashboard.putNumber("Current", pdp.getTotalCurrent());
     }
 
     /**
@@ -120,6 +120,8 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+
+        compressor.start();
 
         m_robotContainer.getTeleopCommand().schedule();
     }
