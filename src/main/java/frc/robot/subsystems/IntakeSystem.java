@@ -21,6 +21,7 @@ public class IntakeSystem extends LogSubsystem {
         intakeMotor.configFactoryDefault(Constants.Generic.timeoutMs);
         intakeMotor.configOpenloopRamp(Constants.Config.Intake.kOpenLoopRamp, Constants.Generic.timeoutMs);
         intakeMotor.setNeutralMode(NeutralMode.Brake);
+        intakeMotor.setInverted(true);
 
         conveyorMotor = new TalonSRX(Constants.Mapping.Intake.conveyorMotor);
         conveyorMotor.configFactoryDefault(Constants.Generic.timeoutMs);
