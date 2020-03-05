@@ -32,7 +32,6 @@ public class Robot extends TimedRobot {
     public boolean log = true;
 
     PowerDistributionPanel pdp = new PowerDistributionPanel();
-    Compressor compressor = new Compressor();
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -120,8 +119,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-
-        compressor.start();
 
         m_robotContainer.getTeleopCommand().schedule();
     }

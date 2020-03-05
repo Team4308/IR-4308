@@ -29,6 +29,10 @@ public class FlywheelSystem extends LogSubsystem {
                 Constants.Config.Flywheel.VelocityControl.kD, Constants.Generic.timeoutMs);
         flywheelMotor.selectProfileSlot(Constants.Config.Flywheel.VelocityControl.profileSlot, 0);
 
+        flywheelMotor.configPeakCurrentDuration(0);
+        flywheelMotor.configContinuousCurrentLimit(20);
+        flywheelMotor.enableCurrentLimit(true);
+
         stopMoving();
         resetSensors();
     }

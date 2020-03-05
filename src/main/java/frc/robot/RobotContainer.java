@@ -16,19 +16,23 @@ import bbb.control.XBoxWrapper;
 import bbb.math.bbbVector2;
 import bbb.utils.bbbDoubleUtils;
 import bbb.wrapper.LogSubsystem;
+import frc.robot.commands.ClimbArmCommand;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ControlPanelCommand;
+import frc.robot.commands.HopperCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.NormalArcadeDriveCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
+import frc.robot.commands.VelocityCurvatureDriveCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.commands.auto.groups.TestAuto;
 import frc.robot.commands.auto.groups.TestMotionProfile;
 import frc.robot.subsystems.sensors.ColorSensor;
+import frc.robot.subsystems.ClimbArmSystem;
 import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.ControlPanelSystem;
 import frc.robot.subsystems.FlywheelSystem;
-import frc.robot.subsystems.IntakePneumaticsSystem;
+import frc.robot.subsystems.HopperSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
@@ -60,14 +64,17 @@ public class RobotContainer {
     // Intake
     private final IntakeSystem m_intakeSystem;
 
-    // Intake Pneumatics
-    private final IntakePneumaticsSystem m_intakePneumaticsSystem;
+    // Hopper
+    private final HopperSystem m_hopperSystem;
 
     // Flywheel
     private final FlywheelSystem m_flywheelSystem;
 
     // Climb
     private final ClimbSystem m_climbSystem;
+
+    // Climb Arm
+    private final ClimbArmSystem m_climbArmSystem;
 
     /**
      * Commands
@@ -76,15 +83,23 @@ public class RobotContainer {
     private final NormalArcadeDriveCommand normalArcadeDriveCommand;
     // Velocity Arcade Drive
     private final VelocityArcadeDriveCommand velocityArcadeDriveCommand;
+    // Velocity Curveture Drive
+    private final VelocityCurvatureDriveCommand velocityCurvatureDriveCommand;
 
     // Intake
     private final IntakeCommand intakeCommand;
+
+    // Hopper
+    private final HopperCommand hopperCommand;
 
     // Flywheel
     private final VelocityFlywheelCommand flywheelCommand;
 
     // Climb
     private final ClimbCommand climbCommand;
+
+    // Climb Arm
+    private final ClimbArmCommand climbArmCommand;
 
     // Control Panel
     private final ControlPanelCommand controlPanelCommand;
@@ -132,14 +147,17 @@ public class RobotContainer {
         m_intakeSystem = new IntakeSystem();
         subsystems.add(m_intakeSystem);
 
-        m_intakePneumaticsSystem = new IntakePneumaticsSystem();
-        subsystems.add(m_intakePneumaticsSystem);
+        m_hopperSystem = new HopperSystem();
+        subsystems.add(m_hopperSystem);
 
         m_flywheelSystem = new FlywheelSystem();
         subsystems.add(m_flywheelSystem);
 
         m_climbSystem = new ClimbSystem();
         subsystems.add(m_climbSystem);
+
+        m_climbArmSystem = new ClimbArmSystem();
+        subsystems.add(m_climbArmSystem);
 
         /**
          * Init Commands
@@ -148,10 +166,16 @@ public class RobotContainer {
         normalArcadeDriveCommand = new NormalArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
         // Velocity Arcade Drive
         velocityArcadeDriveCommand = new VelocityArcadeDriveCommand(m_driveSystem, () -> getDriveControl());
+        // Velocity Curvature Drive
+        velocityCurvatureDriveCommand = new VelocityCurvatureDriveCommand(m_driveSystem, () -> getDriveControl(), () -> driveStick.joystick.getRawButton(6));
 
         // Intake
         intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
         m_intakeSystem.setDefaultCommand(intakeCommand);
+
+        // Hopper
+        hopperCommand = new HopperCommand(m_hopperSystem, () -> getIntakeControl());
+        m_hopperSystem.setDefaultCommand(hopperCommand);
 
         // Velocity Flywheel
         flywheelCommand = new VelocityFlywheelCommand(m_flywheelSystem, () -> getFlywheelControl());
@@ -161,8 +185,12 @@ public class RobotContainer {
         climbCommand = new ClimbCommand(m_climbSystem, () -> getClimbControl());
         m_climbSystem.setDefaultCommand(climbCommand);
 
+        // Climb Arm
+        climbArmCommand = new ClimbArmCommand(m_climbArmSystem, () -> getClimbArmControl());
+        m_climbArmSystem.setDefaultCommand(climbArmCommand);
+
         // Control Panel
-        controlPanelCommand = new ControlPanelCommand(m_controlPanelSystem, m_colorSensor, () -> getControlPanelControl());
+        controlPanelCommand = new ControlPanelCommand(m_controlPanelSystem, () -> getControlPanelControl());
         m_controlPanelSystem.setDefaultCommand(controlPanelCommand);
 
         /**
@@ -194,10 +222,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
         driveStick.Back.whenPressed(new InstantCommand(() -> m_driveSystem.resetSensors(), m_driveSystem));
 
-        controlStick.B.whenPressed(new InstantCommand(() -> m_intakePneumaticsSystem.extend(), m_intakePneumaticsSystem));
+        controlStick.LB.whenHeld(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
+        controlStick.LB.whenReleased(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
 
-        controlStick.RB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
-        controlStick.LB.whenPressed(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
+        controlStick.RB.whenHeld(new InstantCommand(() -> m_hopperSystem.isFlipped = -1, m_hopperSystem));
+        controlStick.RB.whenReleased(new InstantCommand(() -> m_hopperSystem.isFlipped = 1, m_hopperSystem));
 
         controlStick.Start.whenPressed(new InstantCommand(() -> this.secondLayer = false));
         controlStick.Back.whenPressed(new InstantCommand(() -> this.secondLayer = true));
@@ -212,11 +241,11 @@ public class RobotContainer {
         double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
 
         bbbVector2 control = new bbbVector2(turn, throttle);
-        control = JoystickHelper.ScaledAxialDeadzone(control);
-        control = JoystickHelper.alternateScaleStick(control, 1.5);
+        control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
+        control = JoystickHelper.precisionScaleStick(control, Constants.Config.Input.DriveStick.kInputScale, Constants.Config.Input.DriveStick.kInputPrecision);
         control = JoystickHelper.clampStick(control);
 
-        if (!JoystickHelper.isStickCentered(control) && !ahrs.isMoving()) {
+        if (!JoystickHelper.isStickCentered(control, Constants.Config.Input.kInputDeadband) && !ahrs.isMoving()) {
             driveStick.joystick.setRumble(RumbleType.kLeftRumble, 1.0);
         } else {
             driveStick.joystick.setRumble(RumbleType.kLeftRumble, 0.0);
@@ -232,17 +261,17 @@ public class RobotContainer {
 
     // Flywheel Control
     public double getFlywheelControl() {
-        return bbbDoubleUtils.normalize(controlStick.getLeftTrigger());
+        return bbbDoubleUtils.normalize(-controlStick.getLeftTrigger());
     }
 
     // Climb Control
     public double getClimbControl() {
         if (secondLayer) {
             double controly = bbbDoubleUtils.normalize(controlStick.getRightY());
-            controly = bbbDoubleUtils.clamp(controly, -1.0, 0.0);
+            controly = bbbDoubleUtils.normalize(controly);
 
             bbbVector2 control = new bbbVector2(0.0, controly);
-            control = JoystickHelper.ScaledAxialDeadzone(control);
+            control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
             control = JoystickHelper.clampStick(control);
 
             return control.y;
@@ -253,10 +282,10 @@ public class RobotContainer {
     public double getClimbArmControl() {
         if (secondLayer) {
             double controly = bbbDoubleUtils.normalize(controlStick.getLeftY());
-            controly = bbbDoubleUtils.clamp(controly, -1.0, 0.0);
+            controly = bbbDoubleUtils.normalize(controly);
 
             bbbVector2 control = new bbbVector2(0.0, controly);
-            control = JoystickHelper.ScaledAxialDeadzone(control);
+            control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
             control = JoystickHelper.clampStick(control);
 
             return control.y;
@@ -268,10 +297,10 @@ public class RobotContainer {
     public double getControlPanelControl() {
         if (!secondLayer) {
             double controlx = bbbDoubleUtils.normalize(controlStick.getLeftX());
-            controlx = bbbDoubleUtils.clamp(controlx, -1.0, 0.0);
+            controlx = bbbDoubleUtils.normalize(controlx);
 
             bbbVector2 control = new bbbVector2(controlx, 0.0);
-            control = JoystickHelper.ScaledAxialDeadzone(control);
+            control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
             control = JoystickHelper.clampStick(control);
 
             return control.x;

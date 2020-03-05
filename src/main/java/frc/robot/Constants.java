@@ -47,24 +47,18 @@ public final class Constants {
             public static int intakeMotor = 6;
             public static int conveyorMotor = 7;
             public static int hopperMotor = 8;
-        }
-
-        public static class IntakePneumatics {
-            public static int solenoidLeftIn = 0;
-            public static int solenoidLeftOut = 1;
-            public static int solenoidRightIn = 2;
-            public static int solenoidRightOut = 3;
+            public static int topRoller = 9;
         }
 
         public static class Climb {
-            public static int master = 9;
-            public static int slave1 = 10;
-            public static int slave2 = 11;
-            public static int slave3 = 12;
+            public static int master = 10;
+            public static int slave1 = 11;
+            public static int slave2 = 12;
+            public static int slave3 = 13;
         }
 
         public static class ClimbArm {
-            public static int motor = 13;
+            public static int motor = 14;
         }
     }
 
@@ -74,7 +68,12 @@ public final class Constants {
 
     public static class Config {
         public static class Input {
-            public static double kInputDeadband = 0.08;
+            public static double kInputDeadband = 0.14;
+
+            public static class DriveStick {
+                public static double kInputPrecision = 0.6;
+                public static double kInputScale = 3.0;
+            }
         }
 
         public static class ColorSensor {
@@ -133,8 +132,8 @@ public final class Constants {
             }
 
             public static class GyroControl {
-                public static double kP = 0.006;
-                public static double kI = 0.01;
+                public static double kP = 0.012;
+                public static double kI = 0.0002;
                 public static double kD = 0.0;
 
                 public static double kToleranceDegrees = 1.0;
@@ -144,14 +143,14 @@ public final class Constants {
                 public static int profileSlot = 0;
 
                 public static class Left {
-                    public static double kP = 0.1;
+                    public static double kP = 0.2;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0468;
                 }
 
                 public static class Right {
-                    public static double kP = 0.1;
+                    public static double kP = 0.2;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0468;

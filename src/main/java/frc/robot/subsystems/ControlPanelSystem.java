@@ -2,22 +2,21 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import bbb.wrapper.LogSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class ControlPanelSystem extends LogSubsystem {
 
-    public VictorSPX motor;
+    public TalonSRX motor;
     public String colorToGoTo = "";
 
     public ControlPanelSystem() {
-        motor = new VictorSPX(Constants.Mapping.ControlPanel.motor);
+        motor = new TalonSRX(Constants.Mapping.ControlPanel.motor);
         motor.configFactoryDefault(Constants.Generic.timeoutMs);
         motor.configOpenloopRamp(Constants.Config.ControlPanel.kOpenLoopRamp, Constants.Generic.timeoutMs);
         motor.setNeutralMode(NeutralMode.Brake);
