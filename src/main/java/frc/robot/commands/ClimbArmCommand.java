@@ -19,6 +19,11 @@ public class ClimbArmCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        m_subsystem.stopControllers();
+    }
+
+    @Override
     public void execute() {
         this.m_subsystem.setOutput(control.getAsDouble());
     }

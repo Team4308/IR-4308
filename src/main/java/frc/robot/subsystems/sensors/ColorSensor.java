@@ -48,6 +48,11 @@ public class ColorSensor extends LogSubsystem {
     }
 
     @Override
+    public void stopControllers() {
+        
+    }
+
+    @Override
     public Sendable log() {
         Shuffleboard.getTab("Log").addString("Color Detected", () -> getColorDetected());
         Shuffleboard.getTab("Log").addNumber("Color Confidence", () -> getColorMatch().confidence);

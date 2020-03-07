@@ -12,7 +12,7 @@ import frc.robot.subsystems.HopperSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
-public class TestAuto extends SequentialCommandGroup {
+public class TrenchToPowerPort extends SequentialCommandGroup {
 
     public TestAuto(TalonFXDriveSystem driveSystem, IntakeSystem intakeSystem, HopperSystem hopperSystem, FlywheelSystem flywheelSystem) {
         addCommands(

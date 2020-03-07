@@ -96,7 +96,7 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
                                         Constants.Generic.timeoutMs);
                         talon.configStatorCurrentLimit(Constants.Config.Drive.Power.kStatorCurrentLimit,
                                         Constants.Generic.timeoutMs);
-                        talon.setNeutralMode(NeutralMode.Brake);
+                        talon.setNeutralMode(NeutralMode.Coast);
                         talon.configNeutralDeadband(0.001, Constants.Generic.timeoutMs);
                         talon.changeMotionControlFramePeriod(5);
                         talon.configVoltageCompSaturation(12.5, Constants.Generic.timeoutMs);

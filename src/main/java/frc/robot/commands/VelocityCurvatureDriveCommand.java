@@ -41,13 +41,6 @@ public class VelocityCurvatureDriveCommand extends CommandBase {
         m_subsystem.driveMode = DrivetrainMode.VELOCITY;
     }
 
-    public void curvatureDrive(double speed, double rotation, boolean isQuickTurn){
-
-        // Clamp inputs
-        speed = Math.max(-1., Math.min(speed, 1.));
-        rotation = Math.max(-1., Math.min(rotation, 1.));
-    } 
-
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {

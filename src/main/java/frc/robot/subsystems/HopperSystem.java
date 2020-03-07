@@ -25,7 +25,8 @@ public class HopperSystem extends LogSubsystem {
         isFlipped = 1;
     }
 
-    public void stopMoving() {
+    @Override
+    public void stopControllers() {
         hopperMotor.set(ControlMode.PercentOutput, 0.0);
     }
 

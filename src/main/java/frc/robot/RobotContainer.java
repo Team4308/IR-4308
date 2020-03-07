@@ -116,7 +116,7 @@ public class RobotContainer {
     public final XBoxWrapper driveStick = new XBoxWrapper(0);
 
     public final XBoxWrapper controlStick = new XBoxWrapper(1);
-    private boolean secondLayer = false;
+    private boolean climbMode = false;
 
     /**
      * Choosers
@@ -196,7 +196,7 @@ public class RobotContainer {
         /**
          * Init Auto
          */
-        testAuto = new TestAuto(m_driveSystem);
+        testAuto = new TestAuto(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
         testMotionProfile = new TestMotionProfile(m_driveSystem);
 
         /**
@@ -204,6 +204,7 @@ public class RobotContainer {
          */
         // Drive Command Chooser
         driveCommandChooser.addOption("Normal Drive", normalArcadeDriveCommand);
+        driveCommandChooser.addOption("Curvature Drive", velocityCurvatureDriveCommand);
         driveCommandChooser.setDefaultOption("Velocity Drive", velocityArcadeDriveCommand);
         SmartDashboard.putData(driveCommandChooser);
 
@@ -228,8 +229,8 @@ public class RobotContainer {
         controlStick.RB.whenHeld(new InstantCommand(() -> m_hopperSystem.isFlipped = -1, m_hopperSystem));
         controlStick.RB.whenReleased(new InstantCommand(() -> m_hopperSystem.isFlipped = 1, m_hopperSystem));
 
-        controlStick.Start.whenPressed(new InstantCommand(() -> this.secondLayer = false));
-        controlStick.Back.whenPressed(new InstantCommand(() -> this.secondLayer = true));
+        controlStick.Start.whenPressed(new InstantCommand(() -> this.climbMode = false));
+        controlStick.Back.whenPressed(new InstantCommand(() -> this.climbMode = true));
     }
 
     /**
@@ -237,41 +238,71 @@ public class RobotContainer {
      */
     // Drive Control
     public bbbVector2 getDriveControl() {
-        double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
-        double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
+        if (!climbMode) {
+            double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
+            double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
 
-        bbbVector2 control = new bbbVector2(turn, throttle);
-        control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
-        control = JoystickHelper.precisionScaleStick(control, Constants.Config.Input.DriveStick.kInputScale, Constants.Config.Input.DriveStick.kInputPrecision);
-        control = JoystickHelper.clampStick(control);
+            bbbVector2 control = new bbbVector2(turn, throttle);
+            control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
+            control = JoystickHelper.precisionScaleStick(control, Constants.Config.Input.DriveStick.kInputScale, Constants.Config.Input.DriveStick.kInputPrecision);
+            control = JoystickHelper.clampStick(control);
 
-        if (!JoystickHelper.isStickCentered(control, Constants.Config.Input.kInputDeadband) && !ahrs.isMoving()) {
-            driveStick.joystick.setRumble(RumbleType.kLeftRumble, 1.0);
+            // if (!JoystickHelper.isStickCentered(control, Constants.Config.Input.kInputDeadband) && !ahrs.isMoving()) {
+            //     driveStick.joystick.setRumble(RumbleType.kLeftRumble, 1.0);
+            // } else {
+            //     driveStick.joystick.setRumble(RumbleType.kLeftRumble, 0.0);
+            // }
+
+            return control;
         } else {
-            driveStick.joystick.setRumble(RumbleType.kLeftRumble, 0.0);
-        }
+            double throttle = bbbDoubleUtils.normalize(-driveStick.getLeftY());
+            throttle /= 2.0;
+            double turn = bbbDoubleUtils.normalize(driveStick.getRightX());
+            turn /= 2.0;
 
-        return control;
+            bbbVector2 control = new bbbVector2(turn, throttle);
+            control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
+            control = JoystickHelper.precisionScaleStick(control, Constants.Config.Input.DriveStick.kInputScale, Constants.Config.Input.DriveStick.kInputPrecision);
+            control = JoystickHelper.clampStick(control);
+
+            double x = bbbDoubleUtils.mapRangeNew(controlStick.getRightTrigger(), 0.0, 1.0, 0.0, 0.1) - bbbDoubleUtils.mapRangeNew(controlStick.getLeftTrigger(), 0.0, 1.0, 0.0, 0.1);
+            double y = 0.0;
+
+            if (controlStick.joystick.getRawButton(6)) {
+                y += 0.1;
+            } else if (controlStick.joystick.getRawButton(5)) {
+                y -= 0.1;
+            }
+
+            return new bbbVector2(x + control.x, y + control.y);
+        }
     }
 
     // Intake Control
     public double getIntakeControl() {
-        return bbbDoubleUtils.normalize(controlStick.getRightTrigger());
+        if (!climbMode) {
+            return bbbDoubleUtils.normalize(controlStick.getRightTrigger());
+        }
+        return 0.0;
     }
 
     // Flywheel Control
     public double getFlywheelControl() {
-        return bbbDoubleUtils.normalize(-controlStick.getLeftTrigger());
+        if (!climbMode) {
+            return bbbDoubleUtils.normalize(-controlStick.getLeftTrigger());
+        }
+        return 0.0;
     }
 
     // Climb Control
     public double getClimbControl() {
-        if (secondLayer) {
+        if (climbMode) {
             double controly = bbbDoubleUtils.normalize(controlStick.getRightY());
-            controly = bbbDoubleUtils.normalize(controly);
+            controly = bbbDoubleUtils.clamp(controly, 0.0, 1.0);
 
             bbbVector2 control = new bbbVector2(0.0, controly);
             control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
+            control = JoystickHelper.scaleStick(control, 2.0);
             control = JoystickHelper.clampStick(control);
 
             return control.y;
@@ -280,12 +311,14 @@ public class RobotContainer {
     }
 
     public double getClimbArmControl() {
-        if (secondLayer) {
+        if (climbMode) {
             double controly = bbbDoubleUtils.normalize(controlStick.getLeftY());
             controly = bbbDoubleUtils.normalize(controly);
+            controly /= 2.0;
 
             bbbVector2 control = new bbbVector2(0.0, controly);
             control = JoystickHelper.ScaledAxialDeadzone(control, Constants.Config.Input.kInputDeadband);
+            control = JoystickHelper.scaleStick(control, 2.0);
             control = JoystickHelper.clampStick(control);
 
             return control.y;
@@ -295,7 +328,7 @@ public class RobotContainer {
 
     // Control Panel Control
     public double getControlPanelControl() {
-        if (!secondLayer) {
+        if (!climbMode) {
             double controlx = bbbDoubleUtils.normalize(controlStick.getLeftX());
             controlx = bbbDoubleUtils.normalize(controlx);
 

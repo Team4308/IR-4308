@@ -82,7 +82,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        
+        for (LogSubsystem system : this.m_robotContainer.subsystems) {
+            system.stopControllers();
+        }
     }
 
     @Override

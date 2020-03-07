@@ -20,14 +20,15 @@ public class ControlPanelSystem extends LogSubsystem {
         motor.configFactoryDefault(Constants.Generic.timeoutMs);
         motor.configOpenloopRamp(Constants.Config.ControlPanel.kOpenLoopRamp, Constants.Generic.timeoutMs);
         motor.setNeutralMode(NeutralMode.Brake);
-        stopMoving();
+        stopControllers();
     }
 
     public void setOutput(double output) {
         motor.set(ControlMode.PercentOutput, output);
     }
 
-    public void stopMoving() {
+    @Override
+    public void stopControllers() {
         motor.set(ControlMode.PercentOutput, 0.0);
     }
 

@@ -22,6 +22,11 @@ public class ClimbArmSystem extends LogSubsystem {
     }
 
     @Override
+    public void stopControllers() {
+        motor.set(ControlMode.PercentOutput, 0.0);
+    }
+
+    @Override
     public Sendable log() {
         return this;
     }

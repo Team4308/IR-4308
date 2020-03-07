@@ -18,7 +18,7 @@ public class HopperCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        m_subsystem.stopMoving();
+        m_subsystem.stopControllers();
     }
 
     @Override

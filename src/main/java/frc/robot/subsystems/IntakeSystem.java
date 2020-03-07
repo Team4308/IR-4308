@@ -47,7 +47,8 @@ public class IntakeSystem extends LogSubsystem {
         isFlipped = 1;
     }
 
-    public void stopMoving() {
+    @Override
+    public void stopControllers() {
         intakeMotor.set(ControlMode.PercentOutput, 0.0);
     }
 

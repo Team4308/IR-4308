@@ -36,16 +36,17 @@ public class ClimbSystem extends LogSubsystem {
             slave.follow(master);
         }
 
-        slave1.setInverted(InvertType.FollowMaster);
+        slave1.setInverted(InvertType.OpposeMaster);
         slave2.setInverted(InvertType.OpposeMaster);
-        slave3.setInverted(InvertType.OpposeMaster);
+        slave3.setInverted(InvertType.FollowMaster);
     }
 
     public void motorControl(double control) {
         master.set(ControlMode.PercentOutput, control);
     }
 
-    public void stopMoving() {
+    @Override
+    public void stopControllers() {
         master.neutralOutput();
     }
 

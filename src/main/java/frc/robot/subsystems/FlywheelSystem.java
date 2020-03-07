@@ -33,11 +33,12 @@ public class FlywheelSystem extends LogSubsystem {
         flywheelMotor.configContinuousCurrentLimit(20);
         flywheelMotor.enableCurrentLimit(true);
 
-        stopMoving();
+        stopControllers();
         resetSensors();
     }
 
-    public void stopMoving(){
+    @Override
+    public void stopControllers(){
         flywheelMotor.set(ControlMode.PercentOutput, 0.0);
     }
 

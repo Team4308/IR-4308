@@ -25,6 +25,6 @@ public class ControlPanelCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_subsystem.stopMoving();
+        m_subsystem.stopControllers();
     }
 }
