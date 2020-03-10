@@ -52,31 +52,32 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         double rightTargetRPM = control.y * Constants.DynConfig.Drive.VelocityDriveRPM;
 
         // if (control.x == 0.0) {
-        //     if (!setSetpoint) {
-        //         if (prevGyroValue == m_subsystem.ahrs.getYaw()) {
-        //             if (waitCounter >= 2) {
-        //                 m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
-        //                 setSetpoint = true;
-        //             } else {
-        //                 waitCounter++;
-        //             }
-        //         } else {
-        //             prevGyroValue = m_subsystem.ahrs.getYaw();
-        //         }
-        //     } else {
-        //         double calculatedTurn = m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
+        // if (!setSetpoint) {
+        // if (prevGyroValue == m_subsystem.ahrs.getYaw()) {
+        // if (waitCounter >= 2) {
+        // m_subsystem.turnController.setSetpoint(m_subsystem.ahrs.getYaw());
+        // setSetpoint = true;
+        // } else {
+        // waitCounter++;
+        // }
+        // } else {
+        // prevGyroValue = m_subsystem.ahrs.getYaw();
+        // }
+        // } else {
+        // double calculatedTurn =
+        // m_subsystem.turnController.calculate(m_subsystem.ahrs.getAngle());
 
-        //         leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1)
-        //                 * Constants.DynConfig.Drive.VelocityDriveRPM;
-        //         rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1)
-        //                 * Constants.DynConfig.Drive.VelocityDriveRPM;
-        //     }
+        // leftTargetRPM += -bbbDoubleUtils.clamp(calculatedTurn, -1, 1)
+        // * Constants.DynConfig.Drive.VelocityDriveRPM;
+        // rightTargetRPM += bbbDoubleUtils.clamp(calculatedTurn, -1, 1)
+        // * Constants.DynConfig.Drive.VelocityDriveRPM;
+        // }
         // } else {
         leftTargetRPM += control.x * Constants.DynConfig.Drive.VelocityDriveRPM;
         rightTargetRPM += -control.x * Constants.DynConfig.Drive.VelocityDriveRPM;
 
-            // waitCounter = 0;
-            // setSetpoint = false;
+        // waitCounter = 0;
+        // setSetpoint = false;
         // }
 
         leftTargetRPM = bbbDoubleUtils.clamp(leftTargetRPM, -Constants.DynConfig.Drive.VelocityDriveRPM,
@@ -89,10 +90,8 @@ public class VelocityArcadeDriveCommand extends CommandBase {
         double rightTargetUnitsPS = (rightTargetRPM / 600.0)
                 * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
 
-        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity,
-                leftTargetUnitsPS / (13 / RobotController.getBatteryVoltage()));
-        m_subsystem.masterRight.set(TalonFXControlMode.Velocity,
-                rightTargetUnitsPS / (13 / RobotController.getBatteryVoltage()));
+        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity, leftTargetUnitsPS);
+        m_subsystem.masterRight.set(TalonFXControlMode.Velocity, rightTargetUnitsPS);
     }
 
     @Override

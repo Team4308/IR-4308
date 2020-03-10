@@ -12,7 +12,6 @@ public class IntakeSystem extends LogSubsystem {
     public TalonSRX intakeMotor;
     public TalonSRX conveyorMotor;
     public TalonSRX rollerMotor;
-    public TalonSRX hopperMotor;
 
     public int isFlipped;
 
@@ -21,12 +20,16 @@ public class IntakeSystem extends LogSubsystem {
         intakeMotor.configFactoryDefault(Constants.Generic.timeoutMs);
         intakeMotor.configOpenloopRamp(Constants.Config.Intake.kOpenLoopRamp, Constants.Generic.timeoutMs);
         intakeMotor.setNeutralMode(NeutralMode.Brake);
+        intakeMotor.configContinuousCurrentLimit(15);
+        intakeMotor.enableCurrentLimit(true);
         intakeMotor.setInverted(true);
 
         conveyorMotor = new TalonSRX(Constants.Mapping.Intake.conveyorMotor);
         conveyorMotor.configFactoryDefault(Constants.Generic.timeoutMs);
         conveyorMotor.configOpenloopRamp(Constants.Config.Intake.kOpenLoopRamp, Constants.Generic.timeoutMs);
         conveyorMotor.setNeutralMode(NeutralMode.Brake);
+        conveyorMotor.configPeakOutputForward(0.6);
+        conveyorMotor.configPeakOutputReverse(-0.6);
         conveyorMotor.follow(intakeMotor);
 
         rollerMotor = new TalonSRX(Constants.Mapping.Intake.topRoller);
@@ -34,15 +37,6 @@ public class IntakeSystem extends LogSubsystem {
         rollerMotor.configOpenloopRamp(Constants.Config.Intake.kOpenLoopRamp, Constants.Generic.timeoutMs);
         rollerMotor.setNeutralMode(NeutralMode.Brake);
         rollerMotor.follow(intakeMotor);
-
-        hopperMotor = new TalonSRX(Constants.Mapping.Intake.hopperMotor);
-        hopperMotor.configFactoryDefault(Constants.Generic.timeoutMs);
-        hopperMotor.configOpenloopRamp(Constants.Config.Intake.kOpenLoopRamp, Constants.Generic.timeoutMs);
-        hopperMotor.configPeakOutputForward(0.25);
-        hopperMotor.configPeakOutputReverse(-0.25);
-        hopperMotor.setNeutralMode(NeutralMode.Brake);
-        hopperMotor.follow(intakeMotor);
-        hopperMotor.setInverted(true);
 
         isFlipped = 1;
     }

@@ -8,7 +8,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.revrobotics.ColorMatch;
 
 import bbb.path.Gains;
 import bbb.path.PathFollowerSettings;
@@ -76,13 +75,6 @@ public final class Constants {
             }
         }
 
-        public static class ColorSensor {
-            public static Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-            public static Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-            public static Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-            public static Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
-        }
-
         public static class ControlPanel {
             public static double kOpenLoopRamp = 0.0;
         }
@@ -98,7 +90,7 @@ public final class Constants {
                 public static int profileSlot = 0;
                 public static final double kSensorUnitsPerRotation = 4096;
 
-                public static double kP = 0.1;
+                public static double kP = 0.16;
                 public static double kI = 0.0;
                 public static double kD = 0.0;
                 public static double kF = 0.0;
@@ -160,8 +152,8 @@ public final class Constants {
             public static class MotionMagic {
                 public static int profileSlot = 1;
 
-                public static int maxVel = 10000;
-                public static int maxAcc = 5000;
+                public static int maxVel = 15000;
+                public static int maxAcc = 6000;
 
                 public static class Left {
                     public static double kP = 0.3;
@@ -182,23 +174,23 @@ public final class Constants {
                 public static int period = 10; // In milliseconds
 
                 public static class Left {
-                    public static double kP = 0.1;
+                    public static double kP = 0.01;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
-                    public static double kV = 0.01;
-                    public static double ka = 0.01;
+                    public static double kV = 0.0;
+                    public static double ka = 0.0;
                 }
 
                 public static Gains leftGains = new Gains(Left.kP, Left.kI, Left.kD, Left.kF, Left.kV, Left.ka);
 
                 public static class Right {
-                    public static double kP = 0.1;
+                    public static double kP = 0.01;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
                     public static double kF = 0.0;
-                    public static double kV = 0.01;
-                    public static double ka = 0.01;
+                    public static double kV = 0.0;
+                    public static double ka = 0.0;
                 }
 
                 public static Gains rightGains = new Gains(Right.kP, Right.kI, Right.kD, Right.kF, Right.kV, Right.ka);
@@ -229,7 +221,7 @@ public final class Constants {
 
     public static class DynConfig {
         public static class Drive {
-            public static double VelocityDriveRPM = 4000;
+            public static double VelocityDriveRPM = 5000;
             public static double GyroTurnSpeed = 4;
         }
 

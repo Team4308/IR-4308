@@ -8,12 +8,11 @@
 package frc.robot;
 
 import bbb.wrapper.LogSubsystem;
-import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -46,8 +45,6 @@ public class Robot extends TimedRobot {
 
         // Logging
         if (log) {
-            Shuffleboard.getTab("Log").addNumber("Joystick X", () -> m_robotContainer.getDriveControl().x).withWidget(BuiltInWidgets.kNumberBar);
-            Shuffleboard.getTab("Log").addNumber("Joystick Y", () -> m_robotContainer.getDriveControl().y).withWidget(BuiltInWidgets.kNumberBar);
             Shuffleboard.getTab("Log").addNumber("PDP Current", () -> pdp.getTotalCurrent()).withWidget(BuiltInWidgets.kGraph);
 
             for (LogSubsystem subsystem : m_robotContainer.subsystems) {
@@ -97,6 +94,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        for (LogSubsystem system : this.m_robotContainer.subsystems) {
+            system.stopControllers();
+        }
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
@@ -120,6 +121,10 @@ public class Robot extends TimedRobot {
         // this line or comment it out.
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
+        }
+
+        for (LogSubsystem system : this.m_robotContainer.subsystems) {
+            system.stopControllers();
         }
 
         m_robotContainer.getTeleopCommand().schedule();

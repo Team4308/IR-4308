@@ -29,6 +29,8 @@ public class UltraPathFollower extends CommandBase {
 
     PIDController turnController;
 
+    Notifier notifier;
+
     private volatile boolean isFinished = false;
     private volatile int currentPoint = 0;
 
@@ -47,6 +49,8 @@ public class UltraPathFollower extends CommandBase {
         turnController.setTolerance(settings.turnGains.tolerance / 5.4);
         turnController.setSetpoint(subsystem.getAhrs().getYaw());
 
+        notifier = new Notifier(this::calculate);
+
         addRequirements(subsystem);
     }
 
@@ -64,21 +68,23 @@ public class UltraPathFollower extends CommandBase {
             return;
         }
 
-        new Thread(() -> {
-            double lastTime = 0.0;
+        notifier.startPeriodic(settings.period / 1000);
 
-            while (!isFinished && DriverStation.getInstance().isEnabled()) {
-                if (Timer.getFPGATimestamp() >= lastTime + settings.period) {
-                    lastTime = Timer.getFPGATimestamp();
-                    calculate();
-                }
-                try {
-                    Thread.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        // new Thread(() -> {
+        //     double lastTime = 0.0;
+
+        //     while (!isFinished && DriverStation.getInstance().isEnabled()) {
+        //         if (Timer.getFPGATimestamp() >= lastTime + settings.period) {
+        //             lastTime = Timer.getFPGATimestamp();
+        //             calculate();
+        //         }
+        //         try {
+        //             Thread.sleep(2);
+        //         } catch (InterruptedException e) {
+        //             e.printStackTrace();
+        //         }
+        //     }
+        // }).start();
     }
 
     protected synchronized void calculate() {
@@ -93,20 +99,20 @@ public class UltraPathFollower extends CommandBase {
             double rightGoalVel = rightPath[currentPoint][1];
             double rightGoalAcc = rightPath[currentPoint][2];
             double rightGoalAbsHead = rightPath[currentPoint][3];
-            double rightGoalRelHead = leftPath[currentPoint][4];
+            double rightGoalRelHead = rightPath[currentPoint][4];
 
             double avgAbsHeading = (leftGoalAbsHead + rightGoalAbsHead) / 2;
             double avgRelHeading = (leftGoalRelHead + rightGoalRelHead) / 2;
 
-            double turnEncoderAmt = (((22.68 * Math.PI / settings.kEncoderCountsPerRotation) / settings.kGearRatio) * (avgRelHeading / 360.0));
+            //double turnEncoderAmt = (((22.68 * Math.PI / settings.kEncoderCountsPerRotation) / settings.kGearRatio) * (avgRelHeading / 360.0));
 
-            double adjLeftGoalPos = leftGoalPos - turnEncoderAmt;
-            double adjRightGoalPos = rightGoalPos + turnEncoderAmt;
+            //double adjLeftGoalPos = leftGoalPos - turnEncoderAmt;
+            //double adjRightGoalPos = rightGoalPos + turnEncoderAmt;
 
-            double leftError = adjLeftGoalPos - m_subsystem.getLeftSensorPosition();
+            double leftError = leftGoalPos - m_subsystem.getLeftSensorPosition();
             double leftDerivError = ((leftError - leftPrevError) / settings.period) - leftGoalVel;
 
-            double rightError = adjRightGoalPos - m_subsystem.getRightSensorPosition();
+            double rightError = rightGoalPos - m_subsystem.getRightSensorPosition();
             double rightDerivError = ((rightError - rightPrevError) / settings.period) - rightGoalVel;
 
             double leftOutput = (settings.leftGains.kP * leftError) + (settings.leftGains.kD * leftDerivError) + (settings.leftGains.kV * leftGoalVel) + (settings.leftGains.ka * leftGoalAcc);

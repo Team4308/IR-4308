@@ -36,6 +36,8 @@ public class ClimbSystem extends LogSubsystem {
             slave.follow(master);
         }
 
+        master.setInverted(true);
+
         slave1.setInverted(InvertType.OpposeMaster);
         slave2.setInverted(InvertType.OpposeMaster);
         slave3.setInverted(InvertType.FollowMaster);

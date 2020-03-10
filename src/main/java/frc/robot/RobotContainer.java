@@ -25,9 +25,12 @@ import frc.robot.commands.NormalArcadeDriveCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
 import frc.robot.commands.VelocityCurvatureDriveCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
-import frc.robot.commands.auto.groups.TestAuto;
+import frc.robot.commands.auto.groups.AngledToPowerPort;
+import frc.robot.commands.auto.groups.ForwardToPowerPort;
+import frc.robot.commands.auto.groups.Steal;
 import frc.robot.commands.auto.groups.TestMotionProfile;
-import frc.robot.subsystems.sensors.ColorSensor;
+import frc.robot.commands.auto.groups.ToPowerPort;
+import frc.robot.commands.auto.groups.ToPowerPort1mr;
 import frc.robot.subsystems.ClimbArmSystem;
 import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.ControlPanelSystem;
@@ -54,9 +57,6 @@ public class RobotContainer {
 
     // Drivetrain
     private final TalonFXDriveSystem m_driveSystem;
-
-    // Color Sensor
-    private final ColorSensor m_colorSensor;
 
     // Control Panel
     private final ControlPanelSystem m_controlPanelSystem;
@@ -107,7 +107,11 @@ public class RobotContainer {
     /**
      * Auto
      */
-    private final TestAuto testAuto;
+    private final ToPowerPort toPowerPort;
+    private final Steal steal;
+    private final ForwardToPowerPort forwardToPowerPort;
+    private final AngledToPowerPort angledToPowerPort;
+    private final ToPowerPort1mr toPowerPort1mr;
     private final TestMotionProfile testMotionProfile;
 
     /**
@@ -137,9 +141,6 @@ public class RobotContainer {
          */
         m_driveSystem = new TalonFXDriveSystem(this.ahrs);
         subsystems.add(m_driveSystem);
-
-        m_colorSensor = new ColorSensor();
-        subsystems.add(m_colorSensor);
 
         m_controlPanelSystem = new ControlPanelSystem();
         subsystems.add(m_controlPanelSystem);
@@ -174,7 +175,7 @@ public class RobotContainer {
         m_intakeSystem.setDefaultCommand(intakeCommand);
 
         // Hopper
-        hopperCommand = new HopperCommand(m_hopperSystem, () -> getIntakeControl());
+        hopperCommand = new HopperCommand(m_hopperSystem, () -> getIntakeControl() / 4.0);
         m_hopperSystem.setDefaultCommand(hopperCommand);
 
         // Velocity Flywheel
@@ -196,7 +197,11 @@ public class RobotContainer {
         /**
          * Init Auto
          */
-        testAuto = new TestAuto(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
+        toPowerPort = new ToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
+        steal = new Steal(m_driveSystem, m_intakeSystem);
+        forwardToPowerPort = new ForwardToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
+        angledToPowerPort = new AngledToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
+        toPowerPort1mr = new ToPowerPort1mr(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
         testMotionProfile = new TestMotionProfile(m_driveSystem);
 
         /**
@@ -210,7 +215,11 @@ public class RobotContainer {
 
         // Auto Command Chooser
         autoCommandChooser.addOption("Test Motion Profile", testMotionProfile);
-        autoCommandChooser.setDefaultOption("Test Auto", testAuto);
+        autoCommandChooser.addOption("To Power Port 1 Meter Right", toPowerPort1mr);
+        autoCommandChooser.addOption("Forward To Power Port", forwardToPowerPort);
+        autoCommandChooser.addOption("Angled To Power Port", angledToPowerPort);
+        autoCommandChooser.addOption("Steal", steal);
+        autoCommandChooser.setDefaultOption("To Power Port", toPowerPort);
         SmartDashboard.putData(autoCommandChooser);
 
         /**
@@ -265,13 +274,13 @@ public class RobotContainer {
             control = JoystickHelper.precisionScaleStick(control, Constants.Config.Input.DriveStick.kInputScale, Constants.Config.Input.DriveStick.kInputPrecision);
             control = JoystickHelper.clampStick(control);
 
-            double x = bbbDoubleUtils.mapRangeNew(controlStick.getRightTrigger(), 0.0, 1.0, 0.0, 0.1) - bbbDoubleUtils.mapRangeNew(controlStick.getLeftTrigger(), 0.0, 1.0, 0.0, 0.1);
+            double x = bbbDoubleUtils.mapRangeNew(controlStick.getRightTrigger(), 0.0, 1.0, 0.0, 0.25) - bbbDoubleUtils.mapRangeNew(controlStick.getLeftTrigger(), 0.0, 1.0, 0.0, 0.25);
             double y = 0.0;
 
             if (controlStick.joystick.getRawButton(6)) {
-                y += 0.1;
+                y += 0.25;
             } else if (controlStick.joystick.getRawButton(5)) {
-                y -= 0.1;
+                y -= 0.25;
             }
 
             return new bbbVector2(x + control.x, y + control.y);

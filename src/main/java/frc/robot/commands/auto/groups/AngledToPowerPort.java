@@ -6,18 +6,17 @@ import frc.robot.commands.HopperCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.commands.auto.DriveDistance;
-import frc.robot.commands.auto.DriveTurn;
 import frc.robot.subsystems.FlywheelSystem;
 import frc.robot.subsystems.HopperSystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
-public class TrenchToPowerPort extends SequentialCommandGroup {
+public class AngledToPowerPort extends SequentialCommandGroup {
 
-    public TestAuto(TalonFXDriveSystem driveSystem, IntakeSystem intakeSystem, HopperSystem hopperSystem, FlywheelSystem flywheelSystem) {
+    public AngledToPowerPort(TalonFXDriveSystem driveSystem, IntakeSystem intakeSystem, HopperSystem hopperSystem, FlywheelSystem flywheelSystem) {
         addCommands(
-            new DriveDistance(-2, driveSystem),
-            new ParallelCommandGroup(new IntakeCommand(intakeSystem, () -> 0.5), new HopperCommand(hopperSystem, () -> 0.5), new VelocityFlywheelCommand(flywheelSystem, () -> -0.7))
+            new DriveDistance(-3.8, driveSystem),
+            new ParallelCommandGroup(new IntakeCommand(intakeSystem, () -> 0.5), new HopperCommand(hopperSystem, () -> 0.25), new VelocityFlywheelCommand(flywheelSystem, () -> -0.7).withTimeout(7))
         );
     }
     

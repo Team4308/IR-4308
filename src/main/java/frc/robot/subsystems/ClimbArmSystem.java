@@ -14,7 +14,7 @@ public class ClimbArmSystem extends LogSubsystem {
     public ClimbArmSystem() {
         motor = new TalonSRX(Constants.Mapping.ClimbArm.motor);
         motor.configFactoryDefault();
-        motor.setNeutralMode(NeutralMode.Brake);
+        motor.setNeutralMode(NeutralMode.Coast);
     }
 
     public void setOutput(double output) {

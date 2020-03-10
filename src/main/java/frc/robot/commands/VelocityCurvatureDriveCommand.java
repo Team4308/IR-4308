@@ -22,7 +22,8 @@ public class VelocityCurvatureDriveCommand extends CommandBase {
     private final Supplier<Boolean> isQuickturn;
 
     // INIT
-    public VelocityCurvatureDriveCommand(TalonFXDriveSystem subsystem, Supplier<bbbVector2> control, Supplier<Boolean> isQuickturn) {
+    public VelocityCurvatureDriveCommand(TalonFXDriveSystem subsystem, Supplier<bbbVector2> control,
+            Supplier<Boolean> isQuickturn) {
         this.m_subsystem = subsystem;
 
         this.control = control;
@@ -50,19 +51,19 @@ public class VelocityCurvatureDriveCommand extends CommandBase {
         // Calculate constant-curvature vs rate-of-change based on QuickTurn
         double leftTargetRPM;
         double rightTargetRPM;
-    
-        if (isQuickturn){
-    
+
+        if (isQuickturn) {
+
             // Rate-of-change calculation
             leftTargetRPM = control.y + control.x;
             rightTargetRPM = control.y - control.x;
         } else {
-    
+
             // Constant-curvature calculation
             leftTargetRPM = control.y + Math.abs(control.y) * control.x;
             rightTargetRPM = control.y - Math.abs(control.y) * control.x;
         }
-    
+
         // Normalize wheel speeds
         double maxMagnitude = Math.max(Math.abs(leftTargetRPM), Math.abs(rightTargetRPM));
         if (maxMagnitude > 1.0) {
@@ -83,10 +84,8 @@ public class VelocityCurvatureDriveCommand extends CommandBase {
         double rightTargetUnitsPS = (rightTargetRPM / 600.0)
                 * (Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation);
 
-        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity,
-                leftTargetUnitsPS / (12.5 / RobotController.getBatteryVoltage()));
-        m_subsystem.masterRight.set(TalonFXControlMode.Velocity,
-                rightTargetUnitsPS / (12.5 / RobotController.getBatteryVoltage()));
+        m_subsystem.masterLeft.set(TalonFXControlMode.Velocity, leftTargetUnitsPS);
+        m_subsystem.masterRight.set(TalonFXControlMode.Velocity, rightTargetUnitsPS);
     }
 
     @Override
