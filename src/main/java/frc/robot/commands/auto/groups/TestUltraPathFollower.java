@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.TalonFXDriveSystem;
 
-public class TestMotionProfile extends SequentialCommandGroup {
+public class TestUltraPathFollower extends SequentialCommandGroup {
 
-    public TestMotionProfile(TalonFXDriveSystem driveSystem) {
+    public TestUltraPathFollower(TalonFXDriveSystem driveSystem) {
         addCommands(new UltraPathFollower("test", Constants.Config.Drive.MotionProfile.settings, driveSystem));
     }
 

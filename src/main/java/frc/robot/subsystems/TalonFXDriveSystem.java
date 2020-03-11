@@ -38,11 +38,11 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
     public DrivetrainMode driveMode = DrivetrainMode.VELOCITY;
 
     // Drivetrain Kinematics
-    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+    public final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
             Constants.Config.Drive.Kinematics.kTrackWidth);
 
     // Drivetrain Odometry
-    private final DifferentialDriveOdometry odometry;
+    public final DifferentialDriveOdometry odometry;
 
     // Turn PID Controller (Velocity)
     public final PIDController turnController = new PIDController(Constants.Config.Drive.GyroControl.kP,
@@ -159,6 +159,25 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
             masterRight.config_kF(Constants.Config.Drive.MotionMagic.profileSlot,
                             Constants.Config.Drive.MotionMagic.Right.kF, Constants.Generic.timeoutMs);
 
+            // Motion Profile
+            masterLeft.config_kP(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kP, Constants.Generic.timeoutMs);
+            masterLeft.config_kI(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kI, Constants.Generic.timeoutMs);
+            masterLeft.config_kD(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kD, Constants.Generic.timeoutMs);
+            masterLeft.config_kF(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kF, Constants.Generic.timeoutMs);
+
+            masterRight.config_kP(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kP, Constants.Generic.timeoutMs);
+            masterRight.config_kI(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kI, Constants.Generic.timeoutMs);
+            masterRight.config_kD(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kD, Constants.Generic.timeoutMs);
+            masterRight.config_kF(Constants.Config.Drive.MotionProfile.profileSlot,
+                            Constants.Config.Drive.MotionProfile.Right.kF, Constants.Generic.timeoutMs);
+
             // Reset
             stopControllers();
             resetSensors();
@@ -193,6 +212,11 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
 
     public double getRightSensorVelocity() {
         return masterRight.getSelectedSensorVelocity(0);
+    }
+
+    public void setMotorVelocity(double left, double right) {
+        masterLeft.set(TalonFXControlMode.Velocity, left);
+        masterRight.set(TalonFXControlMode.Velocity, right);
     }
 
     /**

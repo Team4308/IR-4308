@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 
 import bbb.path.Gains;
 import bbb.path.PathFollowerSettings;
-import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -47,6 +46,7 @@ public final class Constants {
             public static int conveyorMotor = 7;
             public static int hopperMotor = 8;
             public static int topRoller = 9;
+			public static int ballSwitch = 0;
         }
 
         public static class Climb {
@@ -172,12 +172,13 @@ public final class Constants {
 
             public static class MotionProfile {
                 public static int period = 10; // In milliseconds
+                public static int profileSlot = 2;
 
                 public static class Left {
                     public static double kP = 0.01;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
-                    public static double kF = 0.0;
+                    public static double kF = 0.0468;
                     public static double kV = 0.0;
                     public static double ka = 0.0;
                 }
@@ -188,7 +189,7 @@ public final class Constants {
                     public static double kP = 0.01;
                     public static double kI = 0.0;
                     public static double kD = 0.0;
-                    public static double kF = 0.0;
+                    public static double kF = 0.0468;
                     public static double kV = 0.0;
                     public static double ka = 0.0;
                 }

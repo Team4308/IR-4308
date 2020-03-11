@@ -22,13 +22,14 @@ import frc.robot.commands.ControlPanelCommand;
 import frc.robot.commands.HopperCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.NormalArcadeDriveCommand;
+import frc.robot.commands.RollerCommand;
 import frc.robot.commands.VelocityArcadeDriveCommand;
 import frc.robot.commands.VelocityCurvatureDriveCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.commands.auto.groups.AngledToPowerPort;
 import frc.robot.commands.auto.groups.ForwardToPowerPort;
 import frc.robot.commands.auto.groups.Steal;
-import frc.robot.commands.auto.groups.TestMotionProfile;
+import frc.robot.commands.auto.groups.TestUltraPathFollower;
 import frc.robot.commands.auto.groups.ToPowerPort;
 import frc.robot.commands.auto.groups.ToPowerPort1mr;
 import frc.robot.subsystems.ClimbArmSystem;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.ControlPanelSystem;
 import frc.robot.subsystems.FlywheelSystem;
 import frc.robot.subsystems.HopperSystem;
 import frc.robot.subsystems.IntakeSystem;
+import frc.robot.subsystems.RollerSystem;
 import frc.robot.subsystems.TalonFXDriveSystem;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -64,6 +66,9 @@ public class RobotContainer {
     // Intake
     private final IntakeSystem m_intakeSystem;
 
+    // Roller
+    private final RollerSystem m_rollerSystem;
+
     // Hopper
     private final HopperSystem m_hopperSystem;
 
@@ -89,6 +94,9 @@ public class RobotContainer {
     // Intake
     private final IntakeCommand intakeCommand;
 
+    // Roller
+    private final RollerCommand rollerCommand;
+
     // Hopper
     private final HopperCommand hopperCommand;
 
@@ -112,7 +120,7 @@ public class RobotContainer {
     private final ForwardToPowerPort forwardToPowerPort;
     private final AngledToPowerPort angledToPowerPort;
     private final ToPowerPort1mr toPowerPort1mr;
-    private final TestMotionProfile testMotionProfile;
+    private final TestUltraPathFollower testUltraPathFollower;
 
     /**
      * Human Controllers
@@ -148,6 +156,9 @@ public class RobotContainer {
         m_intakeSystem = new IntakeSystem();
         subsystems.add(m_intakeSystem);
 
+        m_rollerSystem = new RollerSystem();
+        subsystems.add(m_rollerSystem);
+
         m_hopperSystem = new HopperSystem();
         subsystems.add(m_hopperSystem);
 
@@ -173,6 +184,10 @@ public class RobotContainer {
         // Intake
         intakeCommand = new IntakeCommand(m_intakeSystem, () -> getIntakeControl());
         m_intakeSystem.setDefaultCommand(intakeCommand);
+
+        // Roller
+        rollerCommand = new RollerCommand(m_rollerSystem, () -> getIntakeControl());
+        m_rollerSystem.setDefaultCommand(rollerCommand);
 
         // Hopper
         hopperCommand = new HopperCommand(m_hopperSystem, () -> getIntakeControl() / 4.0);
@@ -202,7 +217,7 @@ public class RobotContainer {
         forwardToPowerPort = new ForwardToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
         angledToPowerPort = new AngledToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
         toPowerPort1mr = new ToPowerPort1mr(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
-        testMotionProfile = new TestMotionProfile(m_driveSystem);
+        testUltraPathFollower = new TestUltraPathFollower(m_driveSystem);
 
         /**
          * Init Choosers
@@ -214,7 +229,7 @@ public class RobotContainer {
         SmartDashboard.putData(driveCommandChooser);
 
         // Auto Command Chooser
-        autoCommandChooser.addOption("Test Motion Profile", testMotionProfile);
+        autoCommandChooser.addOption("Test Ultra Path Follower", testUltraPathFollower);
         autoCommandChooser.addOption("To Power Port 1 Meter Right", toPowerPort1mr);
         autoCommandChooser.addOption("Forward To Power Port", forwardToPowerPort);
         autoCommandChooser.addOption("Angled To Power Port", angledToPowerPort);
