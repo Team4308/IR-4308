@@ -172,7 +172,6 @@ public final class Constants {
 
             public static class MotionProfile {
                 public static int period = 10; // In milliseconds
-                public static int profileSlot = 2;
 
                 public static class Left {
                     public static double kP = 0.01;

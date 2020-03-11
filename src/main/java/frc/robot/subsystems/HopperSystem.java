@@ -17,10 +17,10 @@ public class HopperSystem extends LogSubsystem {
         hopperMotor = new TalonSRX(Constants.Mapping.Intake.hopperMotor);
         hopperMotor.configFactoryDefault(Constants.Generic.timeoutMs);
         hopperMotor.configOpenloopRamp(Constants.Config.Intake.kOpenLoopRamp, Constants.Generic.timeoutMs);
-        hopperMotor.configPeakOutputForward(0.25);
-        hopperMotor.configPeakOutputReverse(-0.25);
-        hopperMotor.setNeutralMode(NeutralMode.Coast);
-        hopperMotor.setInverted(true);
+        // hopperMotor.configPeakOutputForward(0.5);
+        // hopperMotor.configPeakOutputReverse(-0.5);
+        hopperMotor.setNeutralMode(NeutralMode.Brake);
+        hopperMotor.setInverted(false);
 
         isFlipped = 1;
     }

@@ -9,8 +9,11 @@ public class RollerCommand extends CommandBase {
     public final RollerSystem m_subsystem;
     private final DoubleSupplier control;
 
+    public int timer = 0;
+
     public RollerCommand(RollerSystem subsystem, DoubleSupplier control) {
         this.m_subsystem = subsystem;
+
         this.control = control;
 
         addRequirements(m_subsystem);
@@ -24,11 +27,16 @@ public class RollerCommand extends CommandBase {
     @Override
     public void execute() {
         double control = this.control.getAsDouble();
-        if (!m_subsystem.ballSwitch.get()) {
-            m_subsystem.motorControl(control);
-        } else {
-            m_subsystem.stopControllers();
-        }
+        // if (!m_subsystem.ballSwitch.get()) {
+        //     if (timer <= (2 * 50)) {
+        //         timer++;
+        //     } else {
+                m_subsystem.motorControl(control);
+            // }
+        // } else {
+        //     m_subsystem.stopControllers();
+        //     timer = 0;
+        // }
     }
 
 

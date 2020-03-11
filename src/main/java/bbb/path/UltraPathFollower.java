@@ -108,10 +108,10 @@ public class UltraPathFollower extends CommandBase {
             //double adjLeftGoalPos = leftGoalPos - turnEncoderAmt;
             //double adjRightGoalPos = rightGoalPos + turnEncoderAmt;
 
-            double leftError = (leftGoalPos * 12) - m_subsystem.getLeftSensorPosition();
+            double leftError = ((leftGoalPos * 12) / settings.kGearRatio) - m_subsystem.getLeftSensorPosition();
             double leftDerivError = ((leftError - leftPrevError) / settings.period) - leftGoalVel;
 
-            double rightError = (rightGoalPos * 12) - m_subsystem.getRightSensorPosition();
+            double rightError = ((rightGoalPos * 12) / settings.kGearRatio) - m_subsystem.getRightSensorPosition();
             double rightDerivError = ((rightError - rightPrevError) / settings.period) - rightGoalVel;
 
             double leftOutput = (settings.leftGains.kP * leftError) + (settings.leftGains.kD * leftDerivError) + (settings.leftGains.kV * leftGoalVel) + (settings.leftGains.ka * leftGoalAcc);
@@ -137,7 +137,7 @@ public class UltraPathFollower extends CommandBase {
     }
 
     double[][] loadPath(String profileFilename) {
-        File file = new File(Filesystem.getDeployDirectory().getAbsolutePath() + "/" + profileFilename + ".csv");
+        File file = new File(Filesystem.getDeployDirectory().getAbsolutePath() + "/paths/" + profileFilename + ".csv");
 
         try (BufferedReader csvReader = new BufferedReader(new FileReader(file))) {
             ArrayList<double[]> pointArray = new ArrayList<double[]>();
@@ -148,7 +148,7 @@ public class UltraPathFollower extends CommandBase {
                 pointArray.add(point);
             }
 
-            double[][] doubleArray = new double[pointArray.size()][5];
+            double[][] doubleArray = new double[pointArray.size()][9];
             pointArray.toArray(doubleArray);
 
             return doubleArray;

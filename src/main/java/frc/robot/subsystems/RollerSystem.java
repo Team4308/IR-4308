@@ -11,7 +11,7 @@ import frc.robot.Constants;
 
 public class RollerSystem extends LogSubsystem {
     public TalonSRX rollerMotor;
-    public DigitalInput ballSwitch;
+    // public DigitalInput ballSwitch;
 
     public int isFlipped;
 
@@ -21,7 +21,7 @@ public class RollerSystem extends LogSubsystem {
         rollerMotor.configOpenloopRamp(Constants.Config.Intake.kOpenLoopRamp, Constants.Generic.timeoutMs);
         rollerMotor.setNeutralMode(NeutralMode.Brake);
 
-        ballSwitch = new DigitalInput(Constants.Mapping.Intake.ballSwitch);
+        // ballSwitch = new DigitalInput(Constants.Mapping.Intake.ballSwitch);
 
         isFlipped = 1;
     }

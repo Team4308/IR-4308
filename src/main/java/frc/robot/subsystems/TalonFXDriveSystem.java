@@ -94,7 +94,7 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
             talon.configClosedloopRamp(Constants.Config.Drive.Power.kOpenLoopRamp, Constants.Generic.timeoutMs);
             talon.configStatorCurrentLimit(Constants.Config.Drive.Power.kStatorCurrentLimit,
                     Constants.Generic.timeoutMs);
-            talon.setNeutralMode(NeutralMode.Brake);
+            talon.setNeutralMode(NeutralMode.Coast);
             talon.configNeutralDeadband(0.001, Constants.Generic.timeoutMs);
             talon.changeMotionControlFramePeriod(5);
             talon.configVoltageCompSaturation(12.5, Constants.Generic.timeoutMs);
@@ -155,25 +155,6 @@ public class TalonFXDriveSystem extends TankDriveSubsystem {
                 Constants.Config.Drive.MotionMagic.Right.kD, Constants.Generic.timeoutMs);
         masterRight.config_kF(Constants.Config.Drive.MotionMagic.profileSlot,
                 Constants.Config.Drive.MotionMagic.Right.kF, Constants.Generic.timeoutMs);
-
-        // Motion Profile
-        masterLeft.config_kP(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kP, Constants.Generic.timeoutMs);
-        masterLeft.config_kI(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kI, Constants.Generic.timeoutMs);
-        masterLeft.config_kD(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kD, Constants.Generic.timeoutMs);
-        masterLeft.config_kF(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kF, Constants.Generic.timeoutMs);
-
-        masterRight.config_kP(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kP, Constants.Generic.timeoutMs);
-        masterRight.config_kI(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kI, Constants.Generic.timeoutMs);
-        masterRight.config_kD(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kD, Constants.Generic.timeoutMs);
-        masterRight.config_kF(Constants.Config.Drive.MotionProfile.profileSlot,
-                Constants.Config.Drive.MotionProfile.Right.kF, Constants.Generic.timeoutMs);
 
         // Reset
         stopControllers();

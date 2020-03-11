@@ -192,7 +192,7 @@ public class RobotContainer {
         m_rollerSystem.setDefaultCommand(rollerCommand);
 
         // Hopper
-        hopperCommand = new HopperCommand(m_hopperSystem, () -> getIntakeControl() / 4.0);
+        hopperCommand = new HopperCommand(m_hopperSystem, () -> getIntakeControl() / 2.0);
         m_hopperSystem.setDefaultCommand(hopperCommand);
 
         // Velocity Flywheel
@@ -214,11 +214,11 @@ public class RobotContainer {
         /**
          * Init Auto
          */
-        toPowerPort = new ToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
-        steal = new Steal(m_driveSystem, m_intakeSystem);
-        forwardToPowerPort = new ForwardToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
-        angledToPowerPort = new AngledToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
-        toPowerPort1mr = new ToPowerPort1mr(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
+        toPowerPort = new ToPowerPort(m_driveSystem, m_intakeSystem, m_rollerSystem, m_hopperSystem, m_flywheelSystem);
+        steal = new Steal(m_driveSystem, m_intakeSystem, m_rollerSystem);
+        forwardToPowerPort = new ForwardToPowerPort(m_driveSystem, m_intakeSystem, m_rollerSystem, m_hopperSystem, m_flywheelSystem);
+        angledToPowerPort = new AngledToPowerPort(m_driveSystem, m_intakeSystem, m_rollerSystem, m_hopperSystem, m_flywheelSystem);
+        toPowerPort1mr = new ToPowerPort1mr(m_driveSystem, m_intakeSystem, m_rollerSystem, m_hopperSystem, m_flywheelSystem);
         testUltraPathFollower = new TestUltraPathFollower(m_driveSystem);
         ramseteTest = new RamseteTest(m_driveSystem);
 
@@ -253,6 +253,9 @@ public class RobotContainer {
 
         controlStick.LB.whenHeld(new InstantCommand(() -> m_intakeSystem.isFlipped = -1, m_intakeSystem));
         controlStick.LB.whenReleased(new InstantCommand(() -> m_intakeSystem.isFlipped = 1, m_intakeSystem));
+
+        controlStick.LB.whenHeld(new InstantCommand(() -> m_rollerSystem.isFlipped = -1, m_rollerSystem));
+        controlStick.LB.whenReleased(new InstantCommand(() -> m_rollerSystem.isFlipped = 1, m_rollerSystem));
 
         controlStick.RB.whenHeld(new InstantCommand(() -> m_hopperSystem.isFlipped = -1, m_hopperSystem));
         controlStick.RB.whenReleased(new InstantCommand(() -> m_hopperSystem.isFlipped = 1, m_hopperSystem));
