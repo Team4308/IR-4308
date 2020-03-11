@@ -44,14 +44,14 @@ public class MotionStream {
         TrajectoryPoint tpoint = new TrajectoryPoint();
 
         for (int i = 0; i < length; i++) {
-            System.out.println("Pos: " + points[i][0] + " | Vel: " + points[i][1] + " | Rot: " + points[i][2]);
+            System.out.println("Pos: " + points[i][0] + " | Vel: " + points[i][1] + " | Dur: " + points[i][2]);
             double position = points[i][0];
             double velocity = points[i][1];
             int duration = (int)points[i][2];
 
             tpoint.timeDur = duration;
             tpoint.position = position * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation;
-            tpoint.velocity = velocity * Constants.Config.Drive.Kinematics.kSensorUnitsPerRotation / 600.0;
+            tpoint.velocity = ((velocity * 12) / Constants.Config.Drive.Kinematics.kEncoderInchesPerCount) / 600.0;
 
             tpoint.auxiliaryPos = 0.0;
             tpoint.auxiliaryVel = 0.0;

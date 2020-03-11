@@ -28,6 +28,7 @@ import frc.robot.commands.VelocityCurvatureDriveCommand;
 import frc.robot.commands.VelocityFlywheelCommand;
 import frc.robot.commands.auto.groups.AngledToPowerPort;
 import frc.robot.commands.auto.groups.ForwardToPowerPort;
+import frc.robot.commands.auto.groups.RamseteTest;
 import frc.robot.commands.auto.groups.Steal;
 import frc.robot.commands.auto.groups.TestUltraPathFollower;
 import frc.robot.commands.auto.groups.ToPowerPort;
@@ -121,6 +122,7 @@ public class RobotContainer {
     private final AngledToPowerPort angledToPowerPort;
     private final ToPowerPort1mr toPowerPort1mr;
     private final TestUltraPathFollower testUltraPathFollower;
+    private final RamseteTest ramseteTest;
 
     /**
      * Human Controllers
@@ -218,6 +220,7 @@ public class RobotContainer {
         angledToPowerPort = new AngledToPowerPort(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
         toPowerPort1mr = new ToPowerPort1mr(m_driveSystem, m_intakeSystem, m_hopperSystem, m_flywheelSystem);
         testUltraPathFollower = new TestUltraPathFollower(m_driveSystem);
+        ramseteTest = new RamseteTest(m_driveSystem);
 
         /**
          * Init Choosers
@@ -234,6 +237,7 @@ public class RobotContainer {
         autoCommandChooser.addOption("Forward To Power Port", forwardToPowerPort);
         autoCommandChooser.addOption("Angled To Power Port", angledToPowerPort);
         autoCommandChooser.addOption("Steal", steal);
+        autoCommandChooser.addOption("Ramsete Test", ramseteTest);
         autoCommandChooser.setDefaultOption("To Power Port", toPowerPort);
         SmartDashboard.putData(autoCommandChooser);
 

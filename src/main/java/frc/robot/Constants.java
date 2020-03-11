@@ -110,7 +110,7 @@ public final class Constants {
                 public static final double kWheelDiameter = 6; // In Inches
                 public static final double kInchesPerRotation = kWheelDiameter * Math.PI;
                 public static final double kSensorUnitsPerRotation = 2048; // 2048 for talonfx
-                public static final double kEncoderInchesPerCount = kWheelDiameter * Math.PI / kSensorUnitsPerRotation;
+                public static final double kEncoderInchesPerCount = kInchesPerRotation / kSensorUnitsPerRotation;
 
                 public static final double kGearRatio = (12.0 * 20.0) / (50.0 * 54.0);
             }

@@ -108,10 +108,10 @@ public class UltraPathFollower extends CommandBase {
             //double adjLeftGoalPos = leftGoalPos - turnEncoderAmt;
             //double adjRightGoalPos = rightGoalPos + turnEncoderAmt;
 
-            double leftError = leftGoalPos - m_subsystem.getLeftSensorPosition();
+            double leftError = (leftGoalPos * 12) - m_subsystem.getLeftSensorPosition();
             double leftDerivError = ((leftError - leftPrevError) / settings.period) - leftGoalVel;
 
-            double rightError = rightGoalPos - m_subsystem.getRightSensorPosition();
+            double rightError = (rightGoalPos * 12) - m_subsystem.getRightSensorPosition();
             double rightDerivError = ((rightError - rightPrevError) / settings.period) - rightGoalVel;
 
             double leftOutput = (settings.leftGains.kP * leftError) + (settings.leftGains.kD * leftDerivError) + (settings.leftGains.kV * leftGoalVel) + (settings.leftGains.ka * leftGoalAcc);
